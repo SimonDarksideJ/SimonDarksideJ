@@ -25,15 +25,29 @@ Here are some ideas to get you started:
 
 ## 👋 Hi, I Am Simon "Darkside" Jackson
 
-- I am a developer focusing on Mixed Reality Solutions and the MetaVerse.
+- I am a developer focusing on Mixed Reality Solutions and the Spatial Internet/MetaVerse working at [Ethar](https://www.ethar.com/), the premier XR Expereince Platform providers.
+<br/>[![](https://raw.githubusercontent.com/EtharInc/EtharInc.github.io/main/images/ETHAR_Logo_Guide_2022_Approved.png)](https://www.ethar.com/)
+
 - I have published several Unity titles, including [Mastering Unity 2D Game Development](https://www.amazon.co.uk/Mastering-Unity-2D-Game-Development/dp/1849697345) and [Unity UI Essentials](https://www.amazon.co.uk/gp/product/B00T96XBYI), more to come in 2023!!
-- I built the Microsoft [Mixed Reality Toolkit V2](https://github.com/microsoft/MixedRealityToolkit-Unity/tree/releases/2.8.3) (with friends) and then evolved to the [XRTK](https://github.com/xrtk) and eventually the [Reality Toolkit](https://realitycollective.io/), further evolving multi-platform XR development.
+
+- I am currently focused on building the [Reality Toolkit](https://realitycollective.io/) which is a cross-platform Mixed Reality framework for building XR apps in Unity for a majority of platforms, including: Quest, Pico, HoloLens, Magic Leap, Mobile and more.
+<br/>[![Reality Collective](https://github.com/realitycollective/realitycollective.logo/blob/main/Branding/RealityCollective_HorizontalLogo_1024.png?raw=true)]((https://realitycollective.io/))
+<br/>The Framework is built from the foundation I developed for Microsoft's [Mixed Reality Toolkit V2](https://github.com/microsoft/MixedRealityToolkit-Unity/tree/releases/2.8.3) which evolved into the [XRTK](https://github.com/xrtk) and has now advanced even further with the [Reality Collective](https://realitycollective.io/).
+
 - I also maintain and publish the [Service Framework](https://service-framework.realitycollective.io/) (in the Reality Collective) which is the best and most performant way to build projects in Unity.
+
 - I have been a [Microsoft Mixed Reality MVP](https://mvp.microsoft.com/en-us/PublicProfile/5001069?fullName=Simon%20Jackson) since 2014 (Since 2004 with the change in programs)
+<br/>[![](https://www.stevejgordon.co.uk/wp-content/uploads/2017/11/MVP_Logo_Horizontal_Preferred_Cyan300_RGB_300ppi.png)](https://mvp.microsoft.com/en-us/)
+
 - I am honored to be one of the first [Microsoft Game Development Ambassadors](https://developer.microsoft.com/en-us/games/community/ambassadors/) since the program launched in 2021, helping devs with the MS Game Dev stack.
-- For several years I have been an Xbox MVP helping the dev community get up and running with publishing to Xbox/Windows.  Sadly the program is being retired in 2023 and being replaced with another Ambassador program. (hoping to join that journey too)
+
+- For several years I have been an Xbox MVP helping the dev community get up and running with publishing to Xbox/Windows.  Which has now been merged with the Microsoft [Xbox Ambassadors program](https://news.xbox.com/en-us/2020/09/25/who-are-xbox-ambassadors/) where I continue to engage with the Xbox team.
+<br/>[![](https://i0.wp.com/news.xbox.com/en-us/wp-content/uploads/sites/2/2019/09/XAHeader_HERO.jpg)](https://developer.microsoft.com/en-us/games/community/ambassadors/)
+
 - I publish and maintain the [Unity UI Extensions](https://github.com/unity-UI-Extensions/com.unity.uiextensions) project, packaging up the best the community has to offer for Unity UI components, utilities and "stuff".
+
 - I blog "fairly" regularly on my [Personal blog](https://darkgenesis.zenithmoon.com/) about all things game development related or just cool tech.
+
 - Amongst the various public projects I have worked on (sooo many) the one I was most proud of is the [Fizzyo project](https://www.microsoft.com/en-us/research/project/project-fizzyo/), making games and a game framework to gamify the treatment of Cystic Fibrosis for kids, so much fun.
  
 </td><td valign="top" width="25%">
@@ -51,7 +65,8 @@ Here are some ideas to get you started:
  
 </tr></tr></table>
 
-<a href="https://twitter.com/SimonDarksideJ"><img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/SimonDarksideJ?label=Twitter&style=for-the-badge&logo=twitter&color=1DA1F2">&nbsp;
+<center><a href="https://twitter.com/SimonDarksideJ"><img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/SimonDarksideJ?label=Twitter&style=for-the-badge&logo=twitter&color=1DA1F2">&nbsp;</center>
+<br/>
 
 <table><tr><td valign="top" width="50%">
 
