@@ -26,7 +26,7 @@ Here are some ideas to get you started:
 ## 👋 Hi, I Am Simon "Darkside" Jackson
 
 - I am a developer focusing on Mixed Reality Solutions and the Spatial Internet/MetaVerse working at [Ethar](https://www.ethar.com/), the premier XR Expereince Platform providers.
-<br/>[![](https://raw.githubusercontent.com/EtharInc/EtharInc.github.io/main/images/ETHAR_Logo_Guide_2022_Approved.png)](https://www.ethar.com/)
+<br/>[![](https://etharinc.github.io/img/Ethar_Logo_2020_med.jpg)](https://www.ethar.com/)
 
 - I have published several Unity titles, including [Mastering Unity 2D Game Development](https://www.amazon.co.uk/Mastering-Unity-2D-Game-Development/dp/1849697345) and [Unity UI Essentials](https://www.amazon.co.uk/gp/product/B00T96XBYI), more to come in 2023!!
 
