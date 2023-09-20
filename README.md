@@ -1,4 +1,4 @@
-<a rel="me" href="https://mastodon.social/@SimonDarksideJ"</a>
+<a rel="me" href="https://mastodon.social/@SimonDarksideJ"/>
 <div align=center>
 <a href="https://twitter.com/SimonDarksideJ"><img src="https://cdn.worldvectorlogo.com/logos/twitter-6.svg" title="Twitter" alt="Twitter Account" width="40"/></a> 
 &ensp;<a href="https://www.twitch.tv/simondarksidej"><img src="https://cdn.worldvectorlogo.com/logos/twitch-logo-2019.svg" title="Twitch" alt="Twitch Account" width="60"/></a> 
