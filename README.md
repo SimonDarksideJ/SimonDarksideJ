@@ -33,10 +33,10 @@ Here are some ideas to get you started:
 <br/><br/>[![](https://etharinc.github.io/img/Ethar_Logo_2020_med.jpg)](https://www.ethar.com/)
 
 - I have published several Unity titles, including [Mastering Unity 2D Game Development](https://www.amazon.co.uk/Mastering-Unity-2D-Game-Development/dp/1849697345) and [Unity UI Essentials](https://www.amazon.co.uk/gp/product/B00T96XBYI), more to come in 2023!!
-    <a href="https://www.amazon.co.uk/Mastering-Unity-2D-Game-Development/dp/1849697345"><img src="https://m.media-amazon.com/images/I/613MyDtdgOL._SL1360_.jpg" title="Mastering Unity 2D Game Development" alt="Mastering Unity 2D Game Development" width="100"/></a>    <a href="https://www.amazon.co.uk/Unity-3D-Essentials-Simon-Jackson/dp/1783553618"><img src="https://m.media-amazon.com/images/I/61WTZ4o+YcL._SL1360_.jpg" title="Unity UI Essentials" alt="Unity UI Essentials" width="100"/></a>
+    <br/><a href="https://www.amazon.co.uk/Mastering-Unity-2D-Game-Development/dp/1849697345"><img src="https://m.media-amazon.com/images/I/613MyDtdgOL._SL1360_.jpg" title="Mastering Unity 2D Game Development" alt="Mastering Unity 2D Game Development" width="100"/></a>    <a href="https://www.amazon.co.uk/Unity-3D-Essentials-Simon-Jackson/dp/1783553618"><img src="https://m.media-amazon.com/images/I/61WTZ4o+YcL._SL1360_.jpg" title="Unity UI Essentials" alt="Unity UI Essentials" width="100"/></a>
 
 - New automation title for 2023 [Accelerating Unity Through Automation](https://link.springer.com/book/10.1007/978-1-4842-9508-3)
-    <a href="https://link.springer.com/book/10.1007/978-1-4842-9508-3"><img src="https://media.springernature.com/full/springer-static/cover-hires/book/978-1-4842-9508-3?as=webp" title="Accelerating Unity Through Automation" alt="Accelerating Unity Through Automation" width="100"/></a>
+    <br/><a href="https://link.springer.com/book/10.1007/978-1-4842-9508-3"><img src="https://media.springernature.com/full/springer-static/cover-hires/book/978-1-4842-9508-3?as=webp" title="Accelerating Unity Through Automation" alt="Accelerating Unity Through Automation" width="100"/></a>
 
 - I am currently focused on building the [Reality Toolkit](https://realitycollective.io/) which is a cross-platform Mixed Reality framework for building XR apps in Unity for a majority of platforms, including: Quest, Pico, HoloLens, Magic Leap, Mobile and more.
 <br/>[![Reality Collective](https://github.com/realitycollective/realitycollective.logo/blob/main/Branding/RealityCollective_HorizontalLogo_White.png?raw=true)]((https://realitycollective.io/))
@@ -73,7 +73,7 @@ Here are some ideas to get you started:
  
 </tr></tr></table>
 
-<center><a href="https://twitter.com/SimonDarksideJ"><img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/SimonDarksideJ?label=Twitter&style=for-the-badge&logo=twitter&color=1DA1F2">&ensp;&ensp;<a href="https://www.linkedin.com/in/xrconsultant/"><img src="https://cdn.worldvectorlogo.com/logos/linkedin-logo-2013-1.svg" title="Linkedin" alt="Linkedin Account" width="100"/></a> </center>
+<div align=center><a href="https://twitter.com/SimonDarksideJ"><img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/SimonDarksideJ?label=Twitter&style=for-the-badge&logo=twitter&color=1DA1F2">&ensp;&ensp;<a href="https://www.linkedin.com/in/xrconsultant/"><img src="https://cdn.worldvectorlogo.com/logos/linkedin-logo-2013-1.svg" title="Linkedin" alt="Linkedin Account" width="100"/></a> </div>
 <br/>
 
 <table><tr><td valign="top" width="50%">
