@@ -2,10 +2,10 @@
 <div align=center>
 <a href="https://twitter.com/SimonDarksideJ"><img src="https://cdn.worldvectorlogo.com/logos/twitter-6.svg" title="Twitter" alt="Twitter Account" width="40"/></a> 
 &ensp;<a href="https://www.twitch.tv/simondarksidej"><img src="https://cdn.worldvectorlogo.com/logos/twitch-logo-2019.svg" title="Twitch" alt="Twitch Account" width="60"/></a> 
-&ensp;<a href="https://www.youtube.com/@SimonDarksideJ"><img src="https://cdn.worldvectorlogo.com/logos/youtube-icon.svg" title="YouTube" alt="YouTube Account" width="40"/></a>
+&ensp;<a href="https://www.youtube.com/@SimonDarksideJ"><img src="https://cdn.worldvectorlogo.com/logos/youtube-icon-5.svg" title="YouTube" alt="YouTube Account" width="40"/></a>
 &ensp;<a href="https://discord.gg/hF7TtRCFmB"><img src="https://cdn.worldvectorlogo.com/logos/discord-6.svg" title="Discord" alt="Discord Community" width="40"/></a> 
-&ensp;<a href="https://www.linkedin.com/in/metaverseconsultant/"><img src="https://cdn.worldvectorlogo.com/logos/linkedin-icon-2.svg" title="Linkedin" alt="Linkedin Account" width="30"/></a> 
-&ensp;<a href="https://darkgenesis.zenithmoon.com/"><img src="https://darkgenesis.zenithmoon.com/assets/img/branding/darkgenesis-logo-full-light.png" title="DEV" alt="DEVto Blog" width="30"/></a>
+&ensp;<a href="https://www.linkedin.com/in/xrconsultant/"><img src="https://cdn.worldvectorlogo.com/logos/linkedin-icon-2.svg" title="Linkedin" alt="Linkedin Account" width="30"/></a> 
+&ensp;<a href="https://darkgenesis.zenithmoon.com/"><img src="https://darkgenesis.zenithmoon.com/assets/img/branding/ZenithMoonLogo.png" title="DEV" alt="DEVto Blog" width="30"/></a>
 </div>
 
 <!--
@@ -22,28 +22,35 @@ Here are some ideas to get you started:
 - 😄 Pronouns: ...
 - ⚡ Fun fact: ...
 -->
+<br/>
+<div align=center><img src="https://github-readme-stats.vercel.app/api?username=simondarksidej&show_icons=true&theme=dark" title="GitHub Stats" alt="SimonDarksideJ's GitHub stats"/></div>
+
 <table><tr><td valign="top" width="75%">
 
 ## 👋 Hi, I Am Simon "Darkside" Jackson
 
 - I am a developer focusing on Mixed Reality Solutions and the Spatial Internet/MetaVerse working at [Ethar](https://www.ethar.com/), the premier XR Expereince Platform providers.
-<br/>[![](https://etharinc.github.io/img/Ethar_Logo_2020_med.jpg)](https://www.ethar.com/)
+<br/><br/>[![](https://etharinc.github.io/img/Ethar_Logo_2020_med.jpg)](https://www.ethar.com/)
 
 - I have published several Unity titles, including [Mastering Unity 2D Game Development](https://www.amazon.co.uk/Mastering-Unity-2D-Game-Development/dp/1849697345) and [Unity UI Essentials](https://www.amazon.co.uk/gp/product/B00T96XBYI), more to come in 2023!!
+    <a href="https://www.amazon.co.uk/Mastering-Unity-2D-Game-Development/dp/1849697345"><img src="https://m.media-amazon.com/images/I/613MyDtdgOL._SL1360_.jpg" title="Mastering Unity 2D Game Development" alt="Mastering Unity 2D Game Development" width="100"/></a>    <a href="https://www.amazon.co.uk/Unity-3D-Essentials-Simon-Jackson/dp/1783553618"><img src="https://m.media-amazon.com/images/I/61WTZ4o+YcL._SL1360_.jpg" title="Unity UI Essentials" alt="Unity UI Essentials" width="100"/></a>
+
+- New automation title for 2023 [Accelerating Unity Through Automation](https://link.springer.com/book/10.1007/978-1-4842-9508-3)
+    <a href="https://link.springer.com/book/10.1007/978-1-4842-9508-3"><img src="https://media.springernature.com/full/springer-static/cover-hires/book/978-1-4842-9508-3?as=webp" title="Accelerating Unity Through Automation" alt="Accelerating Unity Through Automation" width="100"/></a>
 
 - I am currently focused on building the [Reality Toolkit](https://realitycollective.io/) which is a cross-platform Mixed Reality framework for building XR apps in Unity for a majority of platforms, including: Quest, Pico, HoloLens, Magic Leap, Mobile and more.
-<br/>[![Reality Collective](https://github.com/realitycollective/realitycollective.logo/blob/main/Branding/RealityCollective_HorizontalLogo_1024.png?raw=true)]((https://realitycollective.io/))
+<br/>[![Reality Collective](https://github.com/realitycollective/realitycollective.logo/blob/main/Branding/RealityCollective_HorizontalLogo_White.png?raw=true)]((https://realitycollective.io/))
 <br/>The Framework is built from the foundation I developed for Microsoft's [Mixed Reality Toolkit V2](https://github.com/microsoft/MixedRealityToolkit-Unity/tree/releases/2.8.3) which evolved into the [XRTK](https://github.com/xrtk) and has now advanced even further with the [Reality Collective](https://realitycollective.io/).
 
 - I also maintain and publish the [Service Framework](https://service-framework.realitycollective.io/) (in the Reality Collective) which is the best and most performant way to build projects in Unity.
 
 - I have been a [Microsoft Mixed Reality MVP](https://mvp.microsoft.com/en-us/PublicProfile/5001069?fullName=Simon%20Jackson) since 2014 (Since 2004 with the change in programs)
-<br/>[![](https://www.stevejgordon.co.uk/wp-content/uploads/2017/11/MVP_Logo_Horizontal_Preferred_Cyan300_RGB_300ppi.png)](https://mvp.microsoft.com/en-us/)
+        <br/><br/><a href="https://mvp.microsoft.com/en-us/"><img src="https://www.stevejgordon.co.uk/wp-content/uploads/2017/11/MVP_Logo_Horizontal_Preferred_Cyan300_RGB_300ppi.png" title="Microsoft Mixed Reality MVP" alt="Microsoft Mixed Reality MVP" width="300"/></a>
 
 - I am honored to be one of the first [Microsoft Game Development Ambassadors](https://developer.microsoft.com/en-us/games/community/ambassadors/) since the program launched in 2021, helping devs with the MS Game Dev stack.
 
 - For several years I have been an Xbox MVP helping the dev community get up and running with publishing to Xbox/Windows.  Which has now been merged with the Microsoft [Xbox Ambassadors program](https://news.xbox.com/en-us/2020/09/25/who-are-xbox-ambassadors/) where I continue to engage with the Xbox team.
-<br/>[![](https://i0.wp.com/news.xbox.com/en-us/wp-content/uploads/sites/2/2019/09/XAHeader_HERO.jpg)](https://developer.microsoft.com/en-us/games/community/ambassadors/)
+        <br/><br/><a href="https://developer.microsoft.com/en-us/games/community/ambassadors/"><img src="https://i0.wp.com/news.xbox.com/en-us/wp-content/uploads/sites/2/2019/09/XAHeader_HERO.jpg" title="Xbox Ambassador" alt="Xbox Ambassador" width="300"/></a>
 
 - I publish and maintain the [Unity UI Extensions](https://github.com/unity-UI-Extensions/com.unity.uiextensions) project, packaging up the best the community has to offer for Unity UI components, utilities and "stuff".
 
@@ -66,12 +73,12 @@ Here are some ideas to get you started:
  
 </tr></tr></table>
 
-<center><a href="https://twitter.com/SimonDarksideJ"><img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/SimonDarksideJ?label=Twitter&style=for-the-badge&logo=twitter&color=1DA1F2">&nbsp;</center>
+<center><a href="https://twitter.com/SimonDarksideJ"><img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/SimonDarksideJ?label=Twitter&style=for-the-badge&logo=twitter&color=1DA1F2">&ensp;&ensp;<a href="https://www.linkedin.com/in/xrconsultant/"><img src="https://cdn.worldvectorlogo.com/logos/linkedin-logo-2013-1.svg" title="Linkedin" alt="Linkedin Account" width="100"/></a> </center>
 <br/>
 
 <table><tr><td valign="top" width="50%">
 
-## <img src="https://cdn.worldvectorlogo.com/logos/youtube-icon.svg" title="YouTube ChannelDocker" alt="Youtube Channel" width="30"/> </a>   My YouTube channels
+## <img src="https://cdn.worldvectorlogo.com/logos/youtube-icon-5.svg" title="YouTube ChannelDocker" alt="Youtube Channel" width="30"/> </a>   My YouTube channels
  
 <!-- YOUTUBE-VIDEOS-LIST:START -->
 - [Unity UI Extensions](https://www.youtube.com/@UnityUIExtensions) - dedicated channel for all things Unity UI Extensions based.
@@ -82,7 +89,7 @@ Here are some ideas to get you started:
  
 </td><td valign="top" width="50%">
 
-## <a href="https://bit.ly/darkgenesis"><img src="https://github.com/SimonDarksideJ/SimonDarksideJ.github.io/raw/main/assets/img/branding/ZenithMoonLogo.png" title="DEV" alt="DEV" width="25"/></a>   Recent Articles on the DarkGenesis blog
+## <a href="https://bit.ly/darkgenesis"><img src="https://github.com/SimonDarksideJ/SimonDarksideJ.github.io/raw/main/assets/img/branding/ZenithMoonLogo.png" title="DEV" alt="DEV" width="25"/></a>   DarkGenesis blog posts
  <!-- DEVTO-BLOG-LIST:START -->
 - [The Automation series](https://darkgenesis.zenithmoon.com/tag.html?tag=automation) - for getting to grips with GitHub Actions and Azure Pipelines.
 - [Creating your own blog on GitHub Pages Series](https://darkgenesis.zenithmoon.com/tag.html?tag=jekyll) - How to build your own free blog on GitHub.
