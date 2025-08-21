@@ -32,13 +32,15 @@ Here are some ideas to get you started:
 - I am a developer focusing on Mixed Reality Solutions and the Spatial Internet/MetaVerse working at [Ethar](https://www.ethar.com/), the premier XR Expereince Platform providers.
 <br/><br/>[![](https://etharinc.github.io/img/Ethar_Logo_2020_med.jpg)](https://www.ethar.com/)
 
+- I am also a board member at the MonoGame Foundation, focusing on the evolution and education of the MonoGame Framwork, an open source initiative that continues the traditions of Microsoft XNA framework, delivering game titles to all the modern platforms available today.  As well as being the organiser of the MonoGame Open Hours sesssions (bring the team closer to the community each month), I actively develop for the platform, including facilitating in the education content we publish. <br/><br/>[![](https://raw.githubusercontent.com/MonoGame/MonoGame.Logo/refs/heads/master/FullColorOnDark/HorizontalLogo_256px.png)](https://www.monogame.net/)
+
 - I have published several Unity titles, including [Mastering Unity 2D Game Development](https://www.amazon.co.uk/Mastering-Unity-2D-Game-Development/dp/1849697345) and [Unity UI Essentials](https://www.amazon.co.uk/gp/product/B00T96XBYI), more to come in 2023!!
     <br/><a href="https://www.amazon.co.uk/Mastering-Unity-2D-Game-Development/dp/1849697345"><img src="https://m.media-amazon.com/images/I/613MyDtdgOL._SL1360_.jpg" title="Mastering Unity 2D Game Development" alt="Mastering Unity 2D Game Development" width="100"/></a>    <a href="https://www.amazon.co.uk/Unity-3D-Essentials-Simon-Jackson/dp/1783553618"><img src="https://m.media-amazon.com/images/I/61WTZ4o+YcL._SL1360_.jpg" title="Unity UI Essentials" alt="Unity UI Essentials" width="100"/></a>
 
 - New automation title for 2023 [Accelerating Unity Through Automation](https://link.springer.com/book/10.1007/978-1-4842-9508-3)
     <br/><a href="https://link.springer.com/book/10.1007/978-1-4842-9508-3"><img src="https://media.springernature.com/full/springer-static/cover-hires/book/978-1-4842-9508-3?as=webp" title="Accelerating Unity Through Automation" alt="Accelerating Unity Through Automation" width="100"/></a>
 
-- I am currently focused on building the [Reality Toolkit](https://realitycollective.io/) which is a cross-platform Mixed Reality framework for building XR apps in Unity for a majority of platforms, including: Quest, Pico, HoloLens, Magic Leap, Mobile and more.
+- I am invested in building the [Reality Toolkit](https://realitycollective.io/) which is a cross-platform Mixed Reality framework for building XR apps in Unity for a majority of platforms, including: Quest, Pico, HoloLens, Magic Leap, Mobile and more.
 <br/>[![Reality Collective](https://github.com/realitycollective/realitycollective.logo/blob/main/Branding/RealityCollective_HorizontalLogo_White.png?raw=true)]((https://realitycollective.io/))
 <br/>The Framework is built from the foundation I developed for Microsoft's [Mixed Reality Toolkit V2](https://github.com/microsoft/MixedRealityToolkit-Unity/tree/releases/2.8.3) which evolved into the [XRTK](https://github.com/xrtk) and has now advanced even further with the [Reality Collective](https://realitycollective.io/).
 
@@ -65,6 +67,7 @@ Here are some ideas to get you started:
 - C#
 - Unity
 - MonoGame
+- AI Tooling and production
 - Mixed Reality (AR/VR/XR)
 - Game Development
 - Xbox Development / ID@Xbox
