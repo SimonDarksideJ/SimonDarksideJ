@@ -1,0 +1,46 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+
+# MonoGame Content Pipeline
+Content/bin/
+Content/obj/
+
+# .NET
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+*.suo
+*.ntvs*
+*.ncb
+*.aps
+*.pch
+*.pdb
+
+# NuGet
+*.nupkg
+**/[Pp]ackages/*
+*.nuget.props
+*.nuget.targets
+
+# Build artifacts
+*.dll
+*.exe
+*.xnb
+
+# IDE
+.idea/
+*.vscode/
+.config/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
