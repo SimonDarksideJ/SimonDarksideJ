@@ -26,7 +26,7 @@ A MonoGame DesktopGL application that visualizes the Elite Dangerous universe us
 
 ## Requirements
 
-- .NET 8.0 or later
+- .NET 9.0 or later
 - MonoGame 3.8 or later
 
 ## Building

@@ -14,9 +14,6 @@ public class Game1 : Microsoft.Xna.Framework.Game
     private SpriteBatch _spriteBatch = null!;
     private StarMapManager _starMapManager = null!;
     private SpriteFont _font = null!;
-#pragma warning disable CS0414 // Remove unused field (used for future functionality)
-    private bool _dataLoaded;
-#pragma warning restore CS0414
 
     public Game1()
     {
@@ -58,7 +55,6 @@ public class Game1 : Microsoft.Xna.Framework.Game
     private async Task LoadStarDataAsync()
     {
         await _starMapManager.LoadStarDataAsync();
-        _dataLoaded = true;
     }
 
     private void OnWindowResize(object? sender, EventArgs e)
