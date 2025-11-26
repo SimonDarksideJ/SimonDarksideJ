@@ -6,6 +6,8 @@ using EliteDangerousStarMap.Services;
 using EliteDangerousStarMap.Rendering;
 using EliteDangerousStarMap.Input;
 using EliteDangerousStarMap.UI;
+using CameraAnimation.Core;
+using CameraAnimation.Animations;
 
 namespace EliteDangerousStarMap;
 
@@ -22,17 +24,22 @@ public class StarMapManager : IDisposable
     private readonly UiRenderer _uiRenderer;
     private readonly PlayerShip _playerShip;
     private readonly Random _random;
+    private readonly AnimationController _animationController;
+    private readonly AnimationSettings _animationSettings;
 
     private List<StarSystem> _starSystems;
     private StarSystem? _selectedSystem;
     private bool _isLoading;
     private string _loadingMessage;
     private MouseState _previousMouseState;
+    private KeyboardState _previousKeyboardState;
     private bool _disposed;
+    private bool _showSettings;
 
     // Rendering settings
     private const float BaseStarSize = 0.5f;
     private const float SelectionRadius = 5.0f;
+    private const string SettingsFilePath = "animation_settings.json";
 
     public StarMapManager(GraphicsDevice graphicsDevice)
     {
@@ -47,12 +54,63 @@ public class StarMapManager : IDisposable
         _isLoading = true;
         _loadingMessage = "Initializing...";
         _previousMouseState = Mouse.GetState();
+        _previousKeyboardState = Keyboard.GetState();
+        _showSettings = false;
 
         // Initialize camera at origin, will be repositioned after loading
         _camera = new FpsCameraController(
             Vector3.Zero,
             graphicsDevice.Viewport.Width,
             graphicsDevice.Viewport.Height);
+
+        // Load animation settings
+        _animationSettings = AnimationSettings.Load(SettingsFilePath);
+
+        // Initialize animation controller
+        _animationController = new AnimationController();
+        _animationController.SetTargetCamera(_camera);
+        _animationSettings.ApplyTo(_animationController);
+
+        // Register default animations
+        RegisterAnimations();
+    }
+
+    private void RegisterAnimations()
+    {
+        if (_animationSettings.OrbitEnabled)
+        {
+            var orbit = new OrbitAnimation
+            {
+                OrbitDuration = _animationSettings.OrbitDuration,
+                HeightOffset = 20f,
+                Weight = 1.0f
+            };
+            _animationController.RegisterAnimation(orbit);
+        }
+
+        if (_animationSettings.ZoomEnabled)
+        {
+            var zoom = new ZoomAnimation
+            {
+                ZoomDuration = _animationSettings.ZoomDuration,
+                MinZoom = _animationSettings.MinZoom,
+                MaxZoom = _animationSettings.MaxZoom,
+                Weight = 0.5f
+            };
+            _animationController.RegisterAnimation(zoom);
+        }
+
+        if (_animationSettings.FlybyEnabled)
+        {
+            var flyby = new FlybyAnimation
+            {
+                FlybyDuration = _animationSettings.FlybyDuration,
+                Speed = 30f,
+                LookAtFocus = true,
+                Weight = 1.0f
+            };
+            _animationController.RegisterAnimation(flyby);
+        }
     }
 
     /// <summary>
@@ -102,6 +160,9 @@ public class StarMapManager : IDisposable
             {
                 var startPos = _playerShip.CurrentSystem.WorldPosition;
                 _camera.SetPosition(startPos - new Vector3(0, 0, 50)); // Offset so we can see the system
+                
+                // Set the animation focus point to player's system
+                _animationController.FocusPoint = startPos;
             }
 
             _isLoading = false;
@@ -159,6 +220,7 @@ public class StarMapManager : IDisposable
         {
             var startPos = _playerShip.CurrentSystem.WorldPosition;
             _camera.SetPosition(startPos - new Vector3(0, 0, 50));
+            _animationController.FocusPoint = startPos;
         }
 
         _loadingMessage = $"Sample data created: {_starSystems.Count} systems";
@@ -174,17 +236,84 @@ public class StarMapManager : IDisposable
         var keyboardState = Keyboard.GetState();
         var mouseState = Mouse.GetState();
 
-        // Update camera
-        _camera.Update(gameTime, keyboardState, mouseState);
-
-        // Handle system selection on left click
-        if (mouseState.LeftButton == ButtonState.Pressed && 
-            _previousMouseState.LeftButton == ButtonState.Released)
+        // Toggle settings screen with Tab
+        if (keyboardState.IsKeyDown(Keys.Tab) && !_previousKeyboardState.IsKeyDown(Keys.Tab))
         {
-            TrySelectSystem(mouseState.X, mouseState.Y);
+            _showSettings = !_showSettings;
+            if (_showSettings)
+            {
+                _animationController.ForceUserControl(); // Stop animations when showing settings
+            }
         }
 
+        // Handle settings screen input
+        if (_showSettings)
+        {
+            HandleSettingsInput(keyboardState, mouseState);
+            _previousKeyboardState = keyboardState;
+            _previousMouseState = mouseState;
+            return;
+        }
+
+        // Only update camera when not animating
+        bool hasUserInput = false;
+        if (_animationController.Mode == AnimationMode.UserControl || 
+            _animationController.Mode == AnimationMode.WaitingForIdle)
+        {
+            hasUserInput = _camera.Update(gameTime, keyboardState, mouseState);
+        }
+
+        // Update animation controller
+        _animationController.Update(gameTime, hasUserInput);
+
+        // Handle system selection on left click (only when not animating)
+        if (_animationController.Mode == AnimationMode.UserControl || 
+            _animationController.Mode == AnimationMode.WaitingForIdle)
+        {
+            if (mouseState.LeftButton == ButtonState.Pressed && 
+                _previousMouseState.LeftButton == ButtonState.Released)
+            {
+                TrySelectSystem(mouseState.X, mouseState.Y);
+            }
+        }
+
+        _previousKeyboardState = keyboardState;
         _previousMouseState = mouseState;
+    }
+
+    private void HandleSettingsInput(KeyboardState keyboardState, MouseState mouseState)
+    {
+        // Close settings with Tab or Escape
+        if (keyboardState.IsKeyDown(Keys.Escape) && !_previousKeyboardState.IsKeyDown(Keys.Escape))
+        {
+            _showSettings = false;
+        }
+
+        // Adjust idle timeout with Up/Down arrows
+        if (keyboardState.IsKeyDown(Keys.Up) && !_previousKeyboardState.IsKeyDown(Keys.Up))
+        {
+            _animationSettings.IdleTimeout = Math.Min(_animationSettings.IdleTimeout + 5f, 300f);
+            _animationController.IdleTimeout = _animationSettings.IdleTimeout;
+        }
+        if (keyboardState.IsKeyDown(Keys.Down) && !_previousKeyboardState.IsKeyDown(Keys.Down))
+        {
+            _animationSettings.IdleTimeout = Math.Max(_animationSettings.IdleTimeout - 5f, 5f);
+            _animationController.IdleTimeout = _animationSettings.IdleTimeout;
+        }
+
+        // Toggle auto-animation with A key
+        if (keyboardState.IsKeyDown(Keys.A) && !_previousKeyboardState.IsKeyDown(Keys.A))
+        {
+            _animationSettings.AutoAnimationEnabled = !_animationSettings.AutoAnimationEnabled;
+            _animationController.AutoAnimationEnabled = _animationSettings.AutoAnimationEnabled;
+        }
+
+        // Save settings with Enter
+        if (keyboardState.IsKeyDown(Keys.Enter) && !_previousKeyboardState.IsKeyDown(Keys.Enter))
+        {
+            _animationSettings.Save(SettingsFilePath);
+            _showSettings = false;
+        }
     }
 
     /// <summary>
@@ -224,6 +353,9 @@ public class StarMapManager : IDisposable
         {
             _selectedSystem.IsSelected = true;
             _playerShip.TargetSystem = _selectedSystem;
+            
+            // Update animation focus point to selected system
+            _animationController.FocusPoint = _selectedSystem.WorldPosition;
         }
     }
 
@@ -282,11 +414,13 @@ public class StarMapManager : IDisposable
         _graphicsDevice.DepthStencilState = DepthStencilState.None;
         _uiRenderer.Begin();
 
-        // Draw HUD
-        _uiRenderer.DrawHud(_playerShip, _starSystems.Count, _camera.Position);
+        // Draw HUD with animation status
+        _uiRenderer.DrawHud(_playerShip, _starSystems.Count, _camera.Position, 
+            _animationController.Mode, _animationController.CurrentIdleTime, 
+            _animationController.IdleTimeout);
 
         // Draw info card for selected system
-        if (_selectedSystem != null)
+        if (_selectedSystem != null && !_showSettings)
         {
             var mouseState = Mouse.GetState();
             float distance = _playerShip.CurrentSystem != null 
@@ -299,8 +433,16 @@ public class StarMapManager : IDisposable
                 new Vector2(mouseState.X, mouseState.Y));
         }
 
-        // Draw control hints
-        _uiRenderer.DrawControlHints();
+        // Draw settings screen if open
+        if (_showSettings)
+        {
+            _uiRenderer.DrawSettingsScreen(_animationSettings);
+        }
+        else
+        {
+            // Draw control hints
+            _uiRenderer.DrawControlHints();
+        }
 
         _uiRenderer.End();
     }

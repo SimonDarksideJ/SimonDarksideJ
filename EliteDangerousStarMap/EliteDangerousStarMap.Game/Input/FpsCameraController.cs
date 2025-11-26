@@ -1,18 +1,60 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using CameraAnimation.Interfaces;
 
 namespace EliteDangerousStarMap.Input;
 
 /// <summary>
-/// FPS-style camera controller with WASD movement and mouse look
+/// FPS-style camera controller with WASD movement and mouse look.
+/// Implements IAnimatedCamera to support the animation system.
 /// </summary>
-public class FpsCameraController
+public class FpsCameraController : IAnimatedCamera
 {
-    // Camera properties
-    public Vector3 Position { get; private set; }
-    public float Yaw { get; private set; }
-    public float Pitch { get; private set; }
-    public float Zoom { get; private set; } = 1.0f;
+    // Camera properties - now with public setters for animation support
+    private Vector3 _position;
+    private float _yaw;
+    private float _pitch;
+    private float _zoom = 1.0f;
+
+    /// <summary>
+    /// Gets or sets the camera position.
+    /// </summary>
+    public Vector3 Position
+    {
+        get => _position;
+        set => _position = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the camera yaw rotation.
+    /// </summary>
+    public float Yaw
+    {
+        get => _yaw;
+        set => _yaw = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the camera pitch rotation.
+    /// </summary>
+    public float Pitch
+    {
+        get => _pitch;
+        set => _pitch = MathHelper.Clamp(value, MinPitch, MaxPitch);
+    }
+
+    /// <summary>
+    /// Gets or sets the camera zoom level.
+    /// </summary>
+    public float Zoom
+    {
+        get => _zoom;
+        set
+        {
+            _zoom = MathHelper.Clamp(value, MinZoom, MaxZoom);
+            UpdateProjectionMatrix(_centerPosition.X * 2, _centerPosition.Y * 2);
+        }
+    }
 
     // Movement settings
     public float MoveSpeed { get; set; } = 100f;
@@ -34,10 +76,15 @@ public class FpsCameraController
     public Matrix ViewMatrix { get; private set; }
     public Matrix ProjectionMatrix { get; private set; }
 
+    /// <summary>
+    /// Tracks whether user input was detected in the last update.
+    /// </summary>
+    public bool HasUserInput { get; private set; }
+
     public Vector3 Forward => Vector3.Normalize(new Vector3(
-        (float)(Math.Cos(Pitch) * Math.Sin(Yaw)),
-        (float)Math.Sin(Pitch),
-        (float)(Math.Cos(Pitch) * Math.Cos(Yaw))
+        (float)(Math.Cos(_pitch) * Math.Sin(_yaw)),
+        (float)Math.Sin(_pitch),
+        (float)(Math.Cos(_pitch) * Math.Cos(_yaw))
     ));
 
     public Vector3 Right => Vector3.Normalize(Vector3.Cross(Forward, Vector3.Up));
@@ -46,9 +93,9 @@ public class FpsCameraController
 
     public FpsCameraController(Vector3 startPosition, int viewportWidth, int viewportHeight)
     {
-        Position = startPosition;
-        Yaw = 0;
-        Pitch = 0;
+        _position = startPosition;
+        _yaw = 0;
+        _pitch = 0;
         _previousMouseState = Mouse.GetState();
         _centerPosition = new Point(viewportWidth / 2, viewportHeight / 2);
 
@@ -57,7 +104,7 @@ public class FpsCameraController
     }
 
     /// <summary>
-    /// Sets the camera position to center on a world position
+    /// Sets the camera position to center on a world position.
     /// </summary>
     public void SetPosition(Vector3 position)
     {
@@ -66,14 +113,14 @@ public class FpsCameraController
     }
 
     /// <summary>
-    /// Updates the projection matrix when viewport changes
+    /// Updates the projection matrix when viewport changes.
     /// </summary>
     public void UpdateProjectionMatrix(int viewportWidth, int viewportHeight)
     {
         _centerPosition = new Point(viewportWidth / 2, viewportHeight / 2);
         float aspectRatio = (float)viewportWidth / viewportHeight;
         ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-            MathHelper.ToRadians(60f / Zoom),
+            MathHelper.ToRadians(60f / _zoom),
             aspectRatio,
             0.1f,
             100000f
@@ -81,10 +128,23 @@ public class FpsCameraController
     }
 
     /// <summary>
-    /// Updates camera based on input
+    /// Updates camera matrices (implements IAnimatedCamera).
     /// </summary>
-    public void Update(GameTime gameTime, KeyboardState keyboardState, MouseState mouseState)
+    public void UpdateMatrices()
     {
+        UpdateViewMatrix();
+    }
+
+    /// <summary>
+    /// Updates camera based on input.
+    /// </summary>
+    /// <param name="gameTime">The game time.</param>
+    /// <param name="keyboardState">Current keyboard state.</param>
+    /// <param name="mouseState">Current mouse state.</param>
+    /// <returns>True if user input was detected.</returns>
+    public bool Update(GameTime gameTime, KeyboardState keyboardState, MouseState mouseState)
+    {
+        HasUserInput = false;
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         float moveAmount = MoveSpeed * deltaTime;
 
@@ -98,19 +158,37 @@ public class FpsCameraController
         Vector3 movement = Vector3.Zero;
 
         if (keyboardState.IsKeyDown(Keys.W))
+        {
             movement += Forward * moveAmount;
+            HasUserInput = true;
+        }
         if (keyboardState.IsKeyDown(Keys.S))
+        {
             movement -= Forward * moveAmount;
+            HasUserInput = true;
+        }
         if (keyboardState.IsKeyDown(Keys.A))
+        {
             movement -= Right * moveAmount;
+            HasUserInput = true;
+        }
         if (keyboardState.IsKeyDown(Keys.D))
+        {
             movement += Right * moveAmount;
+            HasUserInput = true;
+        }
         if (keyboardState.IsKeyDown(Keys.Space))
+        {
             movement += Vector3.Up * moveAmount;
+            HasUserInput = true;
+        }
         if (keyboardState.IsKeyDown(Keys.Q))
+        {
             movement -= Vector3.Up * moveAmount;
+            HasUserInput = true;
+        }
 
-        Position += movement;
+        _position += movement;
 
         // Mouse look (right mouse button held)
         if (mouseState.RightButton == ButtonState.Pressed)
@@ -125,11 +203,15 @@ public class FpsCameraController
                 float deltaX = mouseState.X - _previousMouseState.X;
                 float deltaY = mouseState.Y - _previousMouseState.Y;
 
-                Yaw -= deltaX * MouseSensitivity;
-                Pitch -= deltaY * MouseSensitivity;
+                if (deltaX != 0 || deltaY != 0)
+                {
+                    _yaw -= deltaX * MouseSensitivity;
+                    _pitch -= deltaY * MouseSensitivity;
 
-                // Clamp pitch to prevent flipping
-                Pitch = MathHelper.Clamp(Pitch, MinPitch, MaxPitch);
+                    // Clamp pitch to prevent flipping
+                    _pitch = MathHelper.Clamp(_pitch, MinPitch, MaxPitch);
+                    HasUserInput = true;
+                }
             }
             _previousMouseState = mouseState;
         }
@@ -143,22 +225,24 @@ public class FpsCameraController
         int scrollDelta = mouseState.ScrollWheelValue - _previousMouseState.ScrollWheelValue;
         if (scrollDelta != 0)
         {
-            Zoom += scrollDelta * 0.001f * ZoomSpeed;
-            Zoom = MathHelper.Clamp(Zoom, MinZoom, MaxZoom);
+            _zoom += scrollDelta * 0.001f * ZoomSpeed;
+            _zoom = MathHelper.Clamp(_zoom, MinZoom, MaxZoom);
             UpdateProjectionMatrix(_centerPosition.X * 2, _centerPosition.Y * 2);
+            HasUserInput = true;
         }
 
         UpdateViewMatrix();
+        return HasUserInput;
     }
 
     private void UpdateViewMatrix()
     {
-        Vector3 target = Position + Forward;
-        ViewMatrix = Matrix.CreateLookAt(Position, target, Vector3.Up);
+        Vector3 target = _position + Forward;
+        ViewMatrix = Matrix.CreateLookAt(_position, target, Vector3.Up);
     }
 
     /// <summary>
-    /// Creates a ray from screen coordinates for picking
+    /// Creates a ray from screen coordinates for picking.
     /// </summary>
     public Ray GetPickRay(int screenX, int screenY, int viewportWidth, int viewportHeight)
     {

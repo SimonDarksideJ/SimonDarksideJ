@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using EliteDangerousStarMap.Models;
+using CameraAnimation.Core;
 
 namespace EliteDangerousStarMap.UI;
 
@@ -162,9 +163,11 @@ public class UiRenderer : IDisposable
     }
 
     /// <summary>
-    /// Draws the HUD with current state information
+    /// Draws the HUD with current state information including animation status
     /// </summary>
-    public void DrawHud(PlayerShip ship, int systemCount, Vector3 cameraPosition)
+    public void DrawHud(PlayerShip ship, int systemCount, Vector3 cameraPosition, 
+        AnimationMode animationMode = AnimationMode.UserControl, 
+        float idleTime = 0, float idleTimeout = 30)
     {
         if (_font == null) return;
 
@@ -173,7 +176,7 @@ public class UiRenderer : IDisposable
         Vector2 position = new Vector2(padding, padding);
 
         // Draw semi-transparent background
-        Rectangle hudBounds = new Rectangle(5, 5, 300, lineHeight * 6 + padding);
+        Rectangle hudBounds = new Rectangle(5, 5, 320, lineHeight * 8 + padding);
         DrawRectangle(hudBounds, new Color(0, 0, 0, 150));
 
         // Title
@@ -205,6 +208,92 @@ public class UiRenderer : IDisposable
         // Camera position
         DrawTextWithShadow($"Cam: ({cameraPosition.X:F0}, {cameraPosition.Y:F0}, {cameraPosition.Z:F0})", 
             position, Color.Gray, Color.Black);
+        position.Y += lineHeight;
+
+        // Animation status
+        string modeText = animationMode switch
+        {
+            AnimationMode.UserControl => "Mode: User Control",
+            AnimationMode.WaitingForIdle => $"Mode: Idle in {idleTimeout - idleTime:F0}s",
+            AnimationMode.Animating => "Mode: Auto Camera",
+            AnimationMode.ReturningToControl => "Mode: Returning...",
+            _ => "Mode: Unknown"
+        };
+
+        Color modeColor = animationMode switch
+        {
+            AnimationMode.UserControl => Color.Green,
+            AnimationMode.WaitingForIdle => Color.Yellow,
+            AnimationMode.Animating => Color.Cyan,
+            AnimationMode.ReturningToControl => Color.Orange,
+            _ => Color.White
+        };
+
+        DrawTextWithShadow(modeText, position, modeColor, Color.Black);
+    }
+
+    /// <summary>
+    /// Draws the settings screen
+    /// </summary>
+    public void DrawSettingsScreen(AnimationSettings settings)
+    {
+        if (_font == null) return;
+
+        int screenWidth = _graphicsDevice.Viewport.Width;
+        int screenHeight = _graphicsDevice.Viewport.Height;
+        int cardWidth = 400;
+        int cardHeight = 300;
+        int cardX = (screenWidth - cardWidth) / 2;
+        int cardY = (screenHeight - cardHeight) / 2;
+
+        // Dim background
+        DrawRectangle(new Rectangle(0, 0, screenWidth, screenHeight), new Color(0, 0, 0, 180));
+
+        // Settings panel
+        Rectangle cardBounds = new Rectangle(cardX, cardY, cardWidth, cardHeight);
+        DrawRectangle(cardBounds, new Color(20, 20, 40, 240));
+        DrawRectangleBorder(cardBounds, Color.Orange, 2);
+
+        int padding = 20;
+        int lineHeight = 24;
+        Vector2 position = new Vector2(cardX + padding, cardY + padding);
+
+        // Title
+        DrawTextWithShadow("ANIMATION SETTINGS", position, Color.Orange, Color.Black);
+        position.Y += lineHeight + 10;
+
+        // Idle timeout setting
+        DrawTextWithShadow($"Idle Timeout: {settings.IdleTimeout:F0} seconds", position, Color.White, Color.Black);
+        position.Y += lineHeight;
+        DrawTextWithShadow("  (Up/Down arrows to adjust)", position, Color.Gray, Color.Black);
+        position.Y += lineHeight + 5;
+
+        // Auto animation enabled
+        string autoEnabled = settings.AutoAnimationEnabled ? "ENABLED" : "DISABLED";
+        Color autoColor = settings.AutoAnimationEnabled ? Color.Green : Color.Red;
+        DrawTextWithShadow($"Auto Animation: {autoEnabled}", position, autoColor, Color.Black);
+        position.Y += lineHeight;
+        DrawTextWithShadow("  (Press A to toggle)", position, Color.Gray, Color.Black);
+        position.Y += lineHeight + 5;
+
+        // Animation types
+        DrawTextWithShadow("Active Animations:", position, Color.Cyan, Color.Black);
+        position.Y += lineHeight;
+        
+        string orbitStatus = settings.OrbitEnabled ? "[X]" : "[ ]";
+        DrawTextWithShadow($"  {orbitStatus} Orbit ({settings.OrbitDuration:F0}s)", position, Color.White, Color.Black);
+        position.Y += lineHeight;
+
+        string zoomStatus = settings.ZoomEnabled ? "[X]" : "[ ]";
+        DrawTextWithShadow($"  {zoomStatus} Zoom ({settings.ZoomDuration:F0}s)", position, Color.White, Color.Black);
+        position.Y += lineHeight;
+
+        string flybyStatus = settings.FlybyEnabled ? "[X]" : "[ ]";
+        DrawTextWithShadow($"  {flybyStatus} Flyby ({settings.FlybyDuration:F0}s)", position, Color.White, Color.Black);
+        position.Y += lineHeight + 10;
+
+        // Instructions
+        DrawTextWithShadow("Press ENTER to save, TAB/ESC to close", position, Color.Yellow, Color.Black);
     }
 
     /// <summary>
@@ -218,7 +307,7 @@ public class UiRenderer : IDisposable
         int lineHeight = 16;
         int y = _graphicsDevice.Viewport.Height - padding - lineHeight * 3;
 
-        string controls = "WASD: Move | Mouse Right+Drag: Look | Scroll: Zoom | Click: Select | Shift: Fast | Ctrl: Slow | ESC: Exit";
+        string controls = "WASD: Move | Right-Click+Drag: Look | Scroll: Zoom | Click: Select | Tab: Settings | ESC: Exit";
         Vector2 textSize = _font.MeasureString(controls);
         Vector2 position = new Vector2((_graphicsDevice.Viewport.Width - textSize.X) / 2, y);
 

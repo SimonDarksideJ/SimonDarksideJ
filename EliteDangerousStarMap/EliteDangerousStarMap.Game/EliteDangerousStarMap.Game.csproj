@@ -29,4 +29,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CameraAnimation\CameraAnimation.csproj" />
+  </ItemGroup>
 </Project>

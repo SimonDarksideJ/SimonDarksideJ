@@ -34,7 +34,6 @@ Content/obj/
 # IDE
 .idea/
 *.vscode/
-.config/
 
 # OS generated files
 .DS_Store
@@ -44,3 +43,6 @@ Content/obj/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Settings files (generated at runtime)
+animation_settings.json
