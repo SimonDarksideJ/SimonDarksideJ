@@ -8,8 +8,10 @@ A MonoGame DesktopGL application that visualizes the Elite Dangerous universe us
 - **FPS-Style Navigation**: Navigate through space using standard WASD controls and mouse look
 - **Interactive System Selection**: Click on star systems to select them and view information
 - **Route Visualization**: See a route line drawn from your current system to the selected target
-- **System Info Cards**: View system details including name, coordinates, and distance
-- **Animated Camera System**: Auto-camera with orbit, flyby, and zoom animations after idle timeout
+- **System Info Cards**: View system details including name, coordinates, and distance with "Fly To" button
+- **Ship Flight System**: Fly between star systems with realistic power curve movement
+- **Animated Camera System**: Auto-camera with orbit, flyby, zoom, and ship follow animations
+- **Flight Log**: View real-time status updates and random events during flight
 - **Settings Screen**: Configure animation settings via Tab key
 
 ## Controls
@@ -27,6 +29,36 @@ A MonoGame DesktopGL application that visualizes the Elite Dangerous universe us
 | Tab | Open settings screen |
 | ESC | Exit |
 
+## Ship Flight System
+
+Click on a star system to select it, then click the **"Fly To"** button to start a journey.
+
+### Flight Mechanics
+
+- **Power Curve Speed**: Ship accelerates smoothly, reaches cruise speed, then decelerates on approach
+- **Visual Ship**: A cube represents the ship during flight (placeholder for future 3D model)
+- **Scale Animation**: Ship scales up when departing and down when arriving for a hyperspace effect
+- **Cooldown**: 2-second recharge between jumps
+
+### Flight Log
+
+During flight, a log panel shows:
+- Status updates (warming up, accelerating, cruising, decelerating)
+- Random events (space whales, pirates, nebulae sightings, etc.)
+- Arrival confirmation
+
+Flight logs are automatically saved to `FlightLogs/` directory.
+
+### Camera During Flight
+
+When flying, the camera enters **Follow Mode** with multiple view styles:
+- **Centered**: Ship stays in center of view
+- **Orbit**: Camera slowly orbits the ship
+- **Third-Person**: Camera follows behind the ship
+- **Zoom Pulse**: Gradual zoom in/out effect
+
+You can still control the camera during flight. After idle timeout, camera returns to follow mode.
+
 ## Animated Camera System
 
 When the camera is idle (no user input) for a configurable timeout (default 30 seconds), the camera automatically switches to an animated mode featuring:
@@ -43,6 +75,15 @@ Press **Tab** to open the settings screen where you can:
 - Adjust idle timeout (Up/Down arrows)
 - Toggle auto-animation (A key)
 - Save settings (Enter)
+
+## Gameplay Flow
+
+1. **Explore**: Navigate the star map and look at different systems
+2. **Select**: Click on a system to see its info card and route
+3. **Fly**: Click "Fly To" to start the journey
+4. **Watch**: Camera follows the ship with cinematic animations
+5. **Arrive**: Ship arrives at destination, camera returns to normal
+6. **Repeat**: Select a new target and continue exploring
 
 ## Requirements
 
@@ -75,14 +116,14 @@ This application uses the [Elite Dangerous Star Map (EDSM)](https://www.edsm.net
 EliteDangerousStarMap/
 ├── CameraAnimation/              # Reusable camera animation library
 │   ├── Interfaces/               # IAnimatedCamera, ICameraAnimation
-│   ├── Animations/               # Orbit, Flyby, Zoom, ReturnToControl
+│   ├── Animations/               # Orbit, Flyby, Zoom, ShipFollow, ReturnToControl
 │   ├── Core/                     # AnimationController, AnimationSettings
 │   └── README.md                 # Library documentation
 ├── EliteDangerousStarMap.Game/
 │   ├── Content/                  # Game content (fonts, etc.)
 │   ├── Input/                    # Input handling (camera controller)
-│   ├── Models/                   # Data models (StarSystem, PlayerShip)
-│   ├── Rendering/                # 3D rendering (spheres, lines)
+│   ├── Models/                   # Data models (StarSystem, PlayerShip, FlightLog, ShipFlightController)
+│   ├── Rendering/                # 3D rendering (spheres, lines, cubes)
 │   ├── Services/                 # API services (EDSM)
 │   ├── UI/                       # User interface rendering
 │   ├── Game1.cs                  # Main game class
@@ -99,6 +140,7 @@ The `CameraAnimation` library is a reusable component that can be used in any Mo
 - Custom animation types via `ICameraAnimation` interface
 - Stackable animations with weight-based blending
 - Smooth return-to-control transitions
+- **Ship Follow Mode** for tracking moving targets
 
 See [CameraAnimation/README.md](CameraAnimation/README.md) for detailed documentation and extension points.
 

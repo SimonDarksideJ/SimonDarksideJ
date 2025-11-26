@@ -105,17 +105,20 @@ public class UiRenderer : IDisposable
     }
 
     /// <summary>
-    /// Draws an info card for a selected star system
+    /// Draws an info card for a selected star system with "Fly To" button
     /// </summary>
-    public void DrawSystemInfoCard(StarSystem system, float distanceFromPlayer, Vector2 screenPosition)
+    /// <returns>The bounds of the "Fly To" button for click detection, or null if no button shown</returns>
+    public Rectangle? DrawSystemInfoCard(StarSystem system, float distanceFromPlayer, Vector2 screenPosition, 
+        bool showFlyToButton = true, bool isCurrentSystem = false)
     {
-        if (_font == null) return;
+        if (_font == null) return null;
 
         // Card dimensions
         int padding = 10;
         int cardWidth = 250;
         int lineHeight = 20;
-        int cardHeight = padding * 2 + lineHeight * 4;
+        int buttonHeight = showFlyToButton && !isCurrentSystem ? 30 : 0;
+        int cardHeight = padding * 2 + lineHeight * 4 + buttonHeight;
 
         // Card position (offset from click position)
         int cardX = (int)screenPosition.X + 20;
@@ -159,7 +162,33 @@ public class UiRenderer : IDisposable
         if (system.RequirePermit)
         {
             DrawTextWithShadow($"Permit: {system.PermitName ?? "Required"}", textPosition, Color.Red, Color.Black);
+            textPosition.Y += lineHeight;
         }
+
+        // Draw "Fly To" button if applicable
+        Rectangle? flyToButtonBounds = null;
+        if (showFlyToButton && !isCurrentSystem)
+        {
+            int buttonWidth = 80;
+            int buttonX = cardX + cardWidth - buttonWidth - padding;
+            int buttonY = cardY + cardHeight - buttonHeight - padding / 2;
+            
+            flyToButtonBounds = new Rectangle(buttonX, buttonY, buttonWidth, buttonHeight - 5);
+            
+            // Draw button
+            DrawRectangle(flyToButtonBounds.Value, new Color(50, 150, 50));
+            DrawRectangleBorder(flyToButtonBounds.Value, Color.LightGreen, 1);
+            
+            // Button text
+            string buttonText = "Fly To";
+            Vector2 buttonTextSize = _font.MeasureString(buttonText);
+            Vector2 buttonTextPos = new Vector2(
+                buttonX + (buttonWidth - buttonTextSize.X) / 2,
+                buttonY + (buttonHeight - 5 - buttonTextSize.Y) / 2);
+            DrawTextWithShadow(buttonText, buttonTextPos, Color.White, Color.Black);
+        }
+        
+        return flyToButtonBounds;
     }
 
     /// <summary>
@@ -320,6 +349,131 @@ public class UiRenderer : IDisposable
         DrawRectangle(bgBounds, new Color(0, 0, 0, 150));
 
         DrawTextWithShadow(controls, position, Color.White, Color.Black);
+    }
+    
+    /// <summary>
+    /// Draws the flight log panel on the right side of the screen
+    /// </summary>
+    public void DrawFlightLog(FlightLog flightLog)
+    {
+        if (_font == null || flightLog.Entries.Count == 0) return;
+        
+        // Calculate opacity based on fade state
+        float opacity = 1f - flightLog.FadeProgress;
+        if (opacity <= 0) return;
+        
+        int padding = 10;
+        int lineHeight = 16;
+        int panelWidth = 350;
+        var entries = flightLog.GetDisplayEntries().ToList();
+        int panelHeight = padding * 2 + entries.Count * lineHeight + 20;
+        
+        int panelX = _graphicsDevice.Viewport.Width - panelWidth - padding;
+        int panelY = _graphicsDevice.Viewport.Height / 2 - panelHeight / 2;
+        
+        // Draw panel background
+        int alpha = (int)(150 * opacity);
+        DrawRectangle(new Rectangle(panelX, panelY, panelWidth, panelHeight), new Color(0, 0, 30, alpha));
+        DrawRectangleBorder(new Rectangle(panelX, panelY, panelWidth, panelHeight), 
+            new Color(Color.Cyan.R, Color.Cyan.G, Color.Cyan.B, (int)(255 * opacity)), 1);
+        
+        // Draw title
+        Vector2 titlePos = new Vector2(panelX + padding, panelY + padding);
+        int textAlpha = (int)(255 * opacity);
+        DrawTextWithShadow("FLIGHT LOG", titlePos, 
+            new Color(Color.Cyan.R, Color.Cyan.G, Color.Cyan.B, textAlpha), 
+            new Color(0, 0, 0, textAlpha));
+        titlePos.Y += lineHeight + 5;
+        
+        // Draw entries
+        foreach (var entry in entries)
+        {
+            Color entryColor = entry.Type switch
+            {
+                LogEntryType.Status => Color.White,
+                LogEntryType.Event => Color.Yellow,
+                LogEntryType.Warning => Color.Orange,
+                LogEntryType.Arrival => Color.LightGreen,
+                _ => Color.Gray
+            };
+            
+            string timeStr = entry.Timestamp.ToString("HH:mm:ss");
+            string text = $"[{timeStr}] {entry.Message}";
+            
+            // Truncate if too long
+            if (_font.MeasureString(text).X > panelWidth - padding * 2)
+            {
+                text = text.Substring(0, Math.Min(text.Length, 40)) + "...";
+            }
+            
+            DrawTextWithShadow(text, titlePos, 
+                new Color(entryColor.R, entryColor.G, entryColor.B, textAlpha),
+                new Color(0, 0, 0, textAlpha));
+            titlePos.Y += lineHeight;
+        }
+    }
+    
+    /// <summary>
+    /// Draws flight status bar showing current flight state
+    /// </summary>
+    public void DrawFlightStatus(FlightState state, float journeyProgress, string? fromSystem, string? toSystem)
+    {
+        if (_font == null) return;
+        
+        int barWidth = 400;
+        int barHeight = 50;
+        int barX = (_graphicsDevice.Viewport.Width - barWidth) / 2;
+        int barY = 50;
+        
+        // Draw background
+        DrawRectangle(new Rectangle(barX, barY, barWidth, barHeight), new Color(0, 0, 0, 180));
+        DrawRectangleBorder(new Rectangle(barX, barY, barWidth, barHeight), Color.Orange, 2);
+        
+        // Draw progress bar
+        int progressBarX = barX + 10;
+        int progressBarY = barY + 30;
+        int progressBarWidth = barWidth - 20;
+        int progressBarHeight = 10;
+        
+        DrawRectangle(new Rectangle(progressBarX, progressBarY, progressBarWidth, progressBarHeight), 
+            new Color(30, 30, 30));
+        DrawRectangle(new Rectangle(progressBarX, progressBarY, (int)(progressBarWidth * journeyProgress), progressBarHeight), 
+            Color.Cyan);
+        DrawRectangleBorder(new Rectangle(progressBarX, progressBarY, progressBarWidth, progressBarHeight), 
+            Color.White, 1);
+        
+        // Draw status text
+        string statusText = state switch
+        {
+            FlightState.Idle => "Ready",
+            FlightState.WarmingUp => "WARMING UP",
+            FlightState.Accelerating => "ACCELERATING",
+            FlightState.Cruising => "CRUISING",
+            FlightState.Decelerating => "DECELERATING",
+            FlightState.Arriving => "ARRIVING",
+            FlightState.Cooldown => "RECHARGING",
+            _ => "Unknown"
+        };
+        
+        Color stateColor = state switch
+        {
+            FlightState.Cruising => Color.Cyan,
+            FlightState.WarmingUp or FlightState.Cooldown => Color.Yellow,
+            FlightState.Arriving => Color.LightGreen,
+            _ => Color.White
+        };
+        
+        Vector2 statusPos = new Vector2(barX + 10, barY + 8);
+        DrawTextWithShadow($"Status: {statusText}", statusPos, stateColor, Color.Black);
+        
+        // Draw journey info
+        if (fromSystem != null && toSystem != null)
+        {
+            string journeyText = $"{fromSystem} → {toSystem}";
+            Vector2 journeySize = _font.MeasureString(journeyText);
+            Vector2 journeyPos = new Vector2(barX + barWidth - journeySize.X - 10, barY + 8);
+            DrawTextWithShadow(journeyText, journeyPos, Color.Gray, Color.Black);
+        }
     }
 
     /// <summary>

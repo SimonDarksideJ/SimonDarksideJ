@@ -15,11 +15,17 @@ public enum AnimationMode
     /// <summary>Waiting for idle timeout before starting animations.</summary>
     WaitingForIdle,
     
-    /// <summary>Running automated animations.</summary>
+    /// <summary>Running automated "sleep" animations around focus point.</summary>
     Animating,
     
     /// <summary>Transitioning back to user control.</summary>
-    ReturningToControl
+    ReturningToControl,
+    
+    /// <summary>Following a moving target (e.g., ship in flight).</summary>
+    FollowingTarget,
+    
+    /// <summary>Transitioning back to follow mode after user input.</summary>
+    ReturningToFollow
 }
 
 /// <summary>
@@ -55,6 +61,10 @@ public class AnimationController
     
     // Return animation
     private ReturnToControlAnimation? _returnAnimation;
+    
+    // Follow mode
+    private ShipFollowAnimation? _followAnimation;
+    private bool _isFollowModeActive;
 
     /// <summary>
     /// Gets the current animation mode.
@@ -85,6 +95,16 @@ public class AnimationController
     /// Gets or sets an optional focus point for animations.
     /// </summary>
     public Vector3? FocusPoint { get; set; }
+    
+    /// <summary>
+    /// Gets whether follow mode is currently active (even if user has temporary control).
+    /// </summary>
+    public bool IsFollowModeActive => _isFollowModeActive;
+    
+    /// <summary>
+    /// Gets the current ship follow animation if active.
+    /// </summary>
+    public ShipFollowAnimation? FollowAnimation => _followAnimation;
 
     /// <summary>
     /// Event fired when animation mode changes.
@@ -173,7 +193,15 @@ public class AnimationController
         {
             case AnimationMode.UserControl:
             case AnimationMode.WaitingForIdle:
-                UpdateIdleDetection(deltaTime, hasUserInput);
+                if (_isFollowModeActive)
+                {
+                    // In follow mode but user has control
+                    UpdateIdleDetectionForFollow(deltaTime, hasUserInput);
+                }
+                else
+                {
+                    UpdateIdleDetection(deltaTime, hasUserInput);
+                }
                 break;
 
             case AnimationMode.Animating:
@@ -189,6 +217,24 @@ public class AnimationController
 
             case AnimationMode.ReturningToControl:
                 UpdateReturnAnimation(gameTime);
+                break;
+                
+            case AnimationMode.FollowingTarget:
+                if (hasUserInput)
+                {
+                    // User wants control, save current state and give them control
+                    SaveCameraState();
+                    _idleTime = 0;
+                    SetMode(AnimationMode.UserControl);
+                }
+                else
+                {
+                    UpdateFollowAnimation(gameTime);
+                }
+                break;
+                
+            case AnimationMode.ReturningToFollow:
+                UpdateReturnToFollowAnimation(gameTime);
                 break;
         }
 
@@ -369,5 +415,113 @@ public class AnimationController
             _savedZoom = _targetCamera.Zoom;
         }
         StartAnimating();
+    }
+    
+    /// <summary>
+    /// Starts follow mode with a target position provider.
+    /// </summary>
+    /// <param name="positionProvider">Function that returns the current target position.</param>
+    /// <param name="velocityProvider">Optional function that returns the target velocity.</param>
+    public void StartFollowMode(Func<Vector3> positionProvider, Func<Vector3>? velocityProvider = null)
+    {
+        if (_targetCamera == null) return;
+        
+        // Save current camera state
+        SaveCameraState();
+        
+        // Clear any existing animations
+        ClearAnimations();
+        _returnAnimation = null;
+        
+        // Create and initialize follow animation
+        _followAnimation = new ShipFollowAnimation
+        {
+            IsLooping = true,
+            AutoSwitchModes = true,
+            Weight = 1f
+        };
+        _followAnimation.SetTargetProvider(positionProvider, velocityProvider);
+        _followAnimation.Initialize(_targetCamera);
+        
+        _isFollowModeActive = true;
+        _idleTime = 0;
+        SetMode(AnimationMode.FollowingTarget);
+    }
+    
+    /// <summary>
+    /// Stops follow mode and returns to normal operation.
+    /// </summary>
+    public void StopFollowMode()
+    {
+        _isFollowModeActive = false;
+        _followAnimation?.Reset();
+        _followAnimation = null;
+        _idleTime = 0;
+        SetMode(AnimationMode.UserControl);
+    }
+    
+    private void UpdateIdleDetectionForFollow(float deltaTime, bool hasUserInput)
+    {
+        if (hasUserInput || DetectCameraMovement())
+        {
+            _idleTime = 0;
+            SetMode(AnimationMode.UserControl);
+        }
+        else
+        {
+            _idleTime += deltaTime;
+            
+            if (_idleTime >= IdleTimeout)
+            {
+                // Return to following the target
+                StartReturnToFollow();
+            }
+            else if (Mode == AnimationMode.UserControl && _idleTime > 0)
+            {
+                SetMode(AnimationMode.WaitingForIdle);
+            }
+        }
+    }
+    
+    private void UpdateFollowAnimation(GameTime gameTime)
+    {
+        if (_targetCamera == null || _followAnimation == null) return;
+        
+        var transform = _followAnimation.Update(gameTime, _targetCamera);
+        
+        _targetCamera.Position += transform.PositionDelta;
+        _targetCamera.Yaw += transform.YawDelta;
+        _targetCamera.Pitch += transform.PitchDelta;
+        _targetCamera.Zoom += transform.ZoomDelta;
+        _targetCamera.UpdateMatrices();
+    }
+    
+    private void StartReturnToFollow()
+    {
+        if (_targetCamera == null || _followAnimation == null) return;
+        
+        // Create return animation - but we need to calculate where the follow animation would put us
+        // For simplicity, just smoothly transition to follow mode
+        _returnAnimation = null; // No specific return target, follow animation will take over
+        SetMode(AnimationMode.FollowingTarget);
+        _idleTime = 0;
+    }
+    
+    private void UpdateReturnToFollowAnimation(GameTime gameTime)
+    {
+        // This mode smoothly blends back to follow mode
+        // For now, just switch directly
+        SetMode(AnimationMode.FollowingTarget);
+        _idleTime = 0;
+    }
+    
+    private void SaveCameraState()
+    {
+        if (_targetCamera == null) return;
+        
+        _savedPosition = _targetCamera.Position;
+        _savedYaw = _targetCamera.Yaw;
+        _savedPitch = _targetCamera.Pitch;
+        _savedZoom = _targetCamera.Zoom;
     }
 }

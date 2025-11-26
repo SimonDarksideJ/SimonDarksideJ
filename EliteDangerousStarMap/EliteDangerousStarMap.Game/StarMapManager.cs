@@ -20,9 +20,11 @@ public class StarMapManager : IDisposable
     private readonly EdsmApiService _apiService;
     private readonly SphereRenderer _sphereRenderer;
     private readonly LineRenderer _lineRenderer;
+    private readonly CubeRenderer _cubeRenderer;
     private readonly FpsCameraController _camera;
     private readonly UiRenderer _uiRenderer;
     private readonly PlayerShip _playerShip;
+    private readonly ShipFlightController _flightController;
     private readonly Random _random;
     private readonly AnimationController _animationController;
     private readonly AnimationSettings _animationSettings;
@@ -35,10 +37,13 @@ public class StarMapManager : IDisposable
     private KeyboardState _previousKeyboardState;
     private bool _disposed;
     private bool _showSettings;
+    private Rectangle? _flyToButtonBounds;
+    private Vector3 _lastShipVelocity;
 
     // Rendering settings
     private const float BaseStarSize = 0.5f;
     private const float SelectionRadius = 5.0f;
+    private const float ShipScale = 3.0f;
     private const string SettingsFilePath = "animation_settings.json";
 
     public StarMapManager(GraphicsDevice graphicsDevice)
@@ -47,8 +52,10 @@ public class StarMapManager : IDisposable
         _apiService = new EdsmApiService();
         _sphereRenderer = new SphereRenderer(graphicsDevice);
         _lineRenderer = new LineRenderer(graphicsDevice);
+        _cubeRenderer = new CubeRenderer(graphicsDevice);
         _uiRenderer = new UiRenderer(graphicsDevice);
         _playerShip = new PlayerShip();
+        _flightController = new ShipFlightController();
         _random = new Random();
         _starSystems = new List<StarSystem>();
         _isLoading = true;
@@ -73,6 +80,9 @@ public class StarMapManager : IDisposable
 
         // Register default animations
         RegisterAnimations();
+        
+        // Set up flight controller events
+        _flightController.OnJourneyComplete += OnJourneyComplete;
     }
 
     private void RegisterAnimations()
@@ -225,6 +235,25 @@ public class StarMapManager : IDisposable
 
         _loadingMessage = $"Sample data created: {_starSystems.Count} systems";
     }
+    
+    /// <summary>
+    /// Called when the ship completes a journey
+    /// </summary>
+    private void OnJourneyComplete(StarSystem destination)
+    {
+        // Update player's current system
+        _playerShip.CurrentSystem = destination;
+        _playerShip.TargetSystem = null;
+        _selectedSystem = null;
+        
+        // Stop follow mode
+        _animationController.StopFollowMode();
+        
+        // Center camera on new system
+        var newPos = destination.WorldPosition;
+        _camera.SetPosition(newPos - new Vector3(0, 0, 50));
+        _animationController.FocusPoint = newPos;
+    }
 
     /// <summary>
     /// Updates the star map state
@@ -235,6 +264,12 @@ public class StarMapManager : IDisposable
 
         var keyboardState = Keyboard.GetState();
         var mouseState = Mouse.GetState();
+        
+        // Update flight controller
+        Vector3 prevShipPos = _flightController.CurrentPosition;
+        _flightController.Update(gameTime);
+        _lastShipVelocity = (_flightController.CurrentPosition - prevShipPos) / 
+            Math.Max((float)gameTime.ElapsedGameTime.TotalSeconds, 0.001f);
 
         // Toggle settings screen with Tab
         if (keyboardState.IsKeyDown(Keys.Tab) && !_previousKeyboardState.IsKeyDown(Keys.Tab))
@@ -255,10 +290,24 @@ public class StarMapManager : IDisposable
             return;
         }
 
-        // Only update camera when not animating
+        // Check for "Fly To" button click
+        if (mouseState.LeftButton == ButtonState.Pressed && 
+            _previousMouseState.LeftButton == ButtonState.Released)
+        {
+            if (_flyToButtonBounds.HasValue && 
+                _flyToButtonBounds.Value.Contains(mouseState.X, mouseState.Y))
+            {
+                StartFlight();
+            }
+        }
+
+        // Determine if we should process user camera input
+        bool allowCameraInput = !_flightController.IsFlying || 
+            (_animationController.Mode == AnimationMode.UserControl || 
+             _animationController.Mode == AnimationMode.WaitingForIdle);
+        
         bool hasUserInput = false;
-        if (_animationController.Mode == AnimationMode.UserControl || 
-            _animationController.Mode == AnimationMode.WaitingForIdle)
+        if (allowCameraInput)
         {
             hasUserInput = _camera.Update(gameTime, keyboardState, mouseState);
         }
@@ -266,14 +315,20 @@ public class StarMapManager : IDisposable
         // Update animation controller
         _animationController.Update(gameTime, hasUserInput);
 
-        // Handle system selection on left click (only when not animating)
-        if (_animationController.Mode == AnimationMode.UserControl || 
-            _animationController.Mode == AnimationMode.WaitingForIdle)
+        // Handle system selection on left click (only when not flying and not in button area)
+        if (!_flightController.IsFlying && 
+            (_animationController.Mode == AnimationMode.UserControl || 
+             _animationController.Mode == AnimationMode.WaitingForIdle))
         {
             if (mouseState.LeftButton == ButtonState.Pressed && 
                 _previousMouseState.LeftButton == ButtonState.Released)
             {
-                TrySelectSystem(mouseState.X, mouseState.Y);
+                // Only select if not clicking on fly-to button
+                if (!_flyToButtonBounds.HasValue || 
+                    !_flyToButtonBounds.Value.Contains(mouseState.X, mouseState.Y))
+                {
+                    TrySelectSystem(mouseState.X, mouseState.Y);
+                }
             }
         }
 
@@ -358,6 +413,27 @@ public class StarMapManager : IDisposable
             _animationController.FocusPoint = _selectedSystem.WorldPosition;
         }
     }
+    
+    /// <summary>
+    /// Starts a flight from current system to the selected target
+    /// </summary>
+    private void StartFlight()
+    {
+        if (_playerShip.CurrentSystem == null || _selectedSystem == null)
+            return;
+        
+        if (_selectedSystem == _playerShip.CurrentSystem)
+            return;
+        
+        // Start the flight
+        _flightController.StartFlight(_playerShip.CurrentSystem, _selectedSystem);
+        
+        // Start camera follow mode
+        _animationController.StartFollowMode(
+            () => _flightController.CurrentPosition,
+            () => _lastShipVelocity
+        );
+    }
 
     /// <summary>
     /// Renders the star map
@@ -385,8 +461,18 @@ public class StarMapManager : IDisposable
         _lineRenderer.DrawGrid(500, 20, new Color(30, 30, 50), viewMatrix, projectionMatrix);
         _lineRenderer.DrawAxes(50, viewMatrix, projectionMatrix);
 
-        // Draw route line if target selected
-        if (_playerShip.CurrentSystem != null && _playerShip.TargetSystem != null)
+        // Draw route line if target selected or flying
+        if (_flightController.IsFlying)
+        {
+            // Draw line from ship to destination
+            _lineRenderer.DrawDashedLine(
+                _flightController.CurrentPosition,
+                _flightController.ToSystem?.WorldPosition ?? Vector3.Zero,
+                Color.Cyan,
+                5.0f,
+                viewMatrix, projectionMatrix);
+        }
+        else if (_playerShip.CurrentSystem != null && _playerShip.TargetSystem != null)
         {
             _lineRenderer.DrawDashedLine(
                 _playerShip.Position,
@@ -399,7 +485,7 @@ public class StarMapManager : IDisposable
         // Draw all star systems
         foreach (var system in _starSystems)
         {
-            bool isPlayerLocation = system == _playerShip.CurrentSystem;
+            bool isPlayerLocation = system == _playerShip.CurrentSystem && !_flightController.IsFlying;
             bool isSelected = system == _selectedSystem;
 
             _sphereRenderer.DrawStar(
@@ -407,6 +493,16 @@ public class StarMapManager : IDisposable
                 BaseStarSize * system.StarSize,
                 isSelected,
                 isPlayerLocation,
+                viewMatrix, projectionMatrix);
+        }
+        
+        // Draw ship if flying
+        if (_flightController.IsFlying && _flightController.ShipScale > 0.01f)
+        {
+            _cubeRenderer.DrawShip(
+                _flightController.CurrentPosition,
+                ShipScale * _flightController.ShipScale,
+                _lastShipVelocity,
                 viewMatrix, projectionMatrix);
         }
 
@@ -418,19 +514,40 @@ public class StarMapManager : IDisposable
         _uiRenderer.DrawHud(_playerShip, _starSystems.Count, _camera.Position, 
             _animationController.Mode, _animationController.CurrentIdleTime, 
             _animationController.IdleTimeout);
+        
+        // Draw flight status bar if flying
+        if (_flightController.IsFlying)
+        {
+            _uiRenderer.DrawFlightStatus(
+                _flightController.State, 
+                _flightController.JourneyProgress,
+                _flightController.FromSystem?.Name,
+                _flightController.ToSystem?.Name);
+        }
+        
+        // Draw flight log if there are entries
+        if (_flightController.FlightLog.Entries.Count > 0)
+        {
+            _uiRenderer.DrawFlightLog(_flightController.FlightLog);
+        }
 
-        // Draw info card for selected system
-        if (_selectedSystem != null && !_showSettings)
+        // Draw info card for selected system (only when not flying)
+        _flyToButtonBounds = null;
+        if (_selectedSystem != null && !_showSettings && !_flightController.IsFlying)
         {
             var mouseState = Mouse.GetState();
             float distance = _playerShip.CurrentSystem != null 
                 ? _playerShip.CurrentSystem.DistanceTo(_selectedSystem)
                 : 0;
+            
+            bool isCurrentSystem = _selectedSystem == _playerShip.CurrentSystem;
 
-            _uiRenderer.DrawSystemInfoCard(
+            _flyToButtonBounds = _uiRenderer.DrawSystemInfoCard(
                 _selectedSystem,
                 distance,
-                new Vector2(mouseState.X, mouseState.Y));
+                new Vector2(mouseState.X, mouseState.Y),
+                showFlyToButton: true,
+                isCurrentSystem: isCurrentSystem);
         }
 
         // Draw settings screen if open
@@ -462,6 +579,7 @@ public class StarMapManager : IDisposable
             _apiService?.Dispose();
             _sphereRenderer?.Dispose();
             _lineRenderer?.Dispose();
+            _cubeRenderer?.Dispose();
             _uiRenderer?.Dispose();
             _disposed = true;
         }

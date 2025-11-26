@@ -83,6 +83,30 @@ Smoothly zooms in and out.
 - `MaxZoom`: Maximum zoom level
 - `DollyZoom`: Move camera with zoom for Vertigo effect
 
+### ShipFollowAnimation
+Follows a moving target (like a ship) with various camera styles.
+
+**Properties:**
+- `MinModeDuration`: Minimum time in one mode before switching
+- `MaxModeDuration`: Maximum time in one mode before switching
+- `AutoSwitchModes`: Whether to automatically switch between modes
+
+**Follow Modes:**
+- `Centered`: Keep target in center of view
+- `Orbit`: Slowly orbit around the target
+- `ThirdPerson`: Follow from behind based on velocity
+- `ZoomPulse`: Gradual zoom in/out while following
+
+**Usage:**
+```csharp
+var follow = new ShipFollowAnimation();
+follow.SetTargetProvider(
+    () => ship.Position,          // Position provider
+    () => ship.Velocity           // Optional velocity provider
+);
+controller.StartFollowMode(() => ship.Position, () => ship.Velocity);
+```
+
 ## Extension Points
 
 ### Creating Custom Animations

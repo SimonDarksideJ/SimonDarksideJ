@@ -46,3 +46,6 @@ Thumbs.db
 
 # Settings files (generated at runtime)
 animation_settings.json
+
+# Flight logs (generated at runtime)
+FlightLogs/
