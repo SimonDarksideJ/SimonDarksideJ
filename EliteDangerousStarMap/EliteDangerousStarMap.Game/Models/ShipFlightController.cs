@@ -43,6 +43,8 @@ public class ShipFlightController
     public float CruiseSpeed { get; set; } = 50f; // Units per second at max speed
     public float MinEventInterval { get; set; } = 3f;
     public float MaxEventInterval { get; set; } = 8f;
+    public float ArrivalThreshold { get; set; } = 0.5f; // Distance to consider "arrived"
+    public float DecelerationTimeoutMultiplier { get; set; } = 1.5f; // Safety timeout for deceleration
     
     /// <summary>
     /// Current flight state
@@ -225,7 +227,7 @@ public class ShipFlightController
         
         // Check if we've arrived
         float remainingDistance = Vector3.Distance(CurrentPosition, _targetPosition);
-        if (remainingDistance < 0.5f || _stateTimer >= DecelerationDuration * 1.5f)
+        if (remainingDistance < ArrivalThreshold || _stateTimer >= DecelerationDuration * DecelerationTimeoutMultiplier)
         {
             CurrentPosition = _targetPosition;
             _journeyProgress = 1f;
@@ -320,5 +322,6 @@ public class ShipFlightController
     // Easing functions
     private static float EaseInQuad(float t) => t * t;
     private static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
-    private static float EaseInOutQuad(float t) => t < 0.5f ? 2f * t * t : 1f - MathF.Pow(-2f * t + 2f, 2f) / 2f;
+    // Note: EaseInOutQuad is provided for potential future use in more complex flight paths
+    // private static float EaseInOutQuad(float t) => t < 0.5f ? 2f * t * t : 1f - MathF.Pow(-2f * t + 2f, 2f) / 2f;
 }

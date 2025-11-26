@@ -44,6 +44,7 @@ public class StarMapManager : IDisposable
     private const float BaseStarSize = 0.5f;
     private const float SelectionRadius = 5.0f;
     private const float ShipScale = 3.0f;
+    private const float MinDeltaTime = 0.001f; // Minimum delta time to prevent division by zero
     private const string SettingsFilePath = "animation_settings.json";
 
     public StarMapManager(GraphicsDevice graphicsDevice)
@@ -269,7 +270,7 @@ public class StarMapManager : IDisposable
         Vector3 prevShipPos = _flightController.CurrentPosition;
         _flightController.Update(gameTime);
         _lastShipVelocity = (_flightController.CurrentPosition - prevShipPos) / 
-            Math.Max((float)gameTime.ElapsedGameTime.TotalSeconds, 0.001f);
+            Math.Max((float)gameTime.ElapsedGameTime.TotalSeconds, MinDeltaTime);
 
         // Toggle settings screen with Tab
         if (keyboardState.IsKeyDown(Keys.Tab) && !_previousKeyboardState.IsKeyDown(Keys.Tab))
