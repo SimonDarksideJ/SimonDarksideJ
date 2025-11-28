@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Newtonsoft.Json;
 using StarSystemData.Models;
 using System.ComponentModel;
+using System.Net.Http;
 
 namespace StarSystemData.Pipeline;
 
@@ -40,6 +41,12 @@ public class StarSystemImportData
 [ContentProcessor(DisplayName = "Star System Data Processor")]
 public class StarSystemDataProcessor : ContentProcessor<StarSystemImportData, StarSystemDatabase>
 {
+    // Static HttpClient for efficient connection pooling and socket reuse
+    private static readonly HttpClient s_httpClient = new()
+    {
+        Timeout = TimeSpan.FromSeconds(30)
+    };
+    
     /// <summary>
     /// Data source mode - ApiFirst or LocalFirst
     /// </summary>
@@ -86,9 +93,9 @@ public class StarSystemDataProcessor : ContentProcessor<StarSystemImportData, St
         }
         else // ApiFirst
         {
-            // Try API first
+            // Try API first - using Task.Run to avoid context deadlock issues
             context.Logger.LogMessage("Attempting to fetch data from EDSM API...");
-            systems = FetchFromApi(context).GetAwaiter().GetResult();
+            systems = Task.Run(() => FetchFromApiAsync(context)).GetAwaiter().GetResult();
             
             if (systems == null || systems.Count == 0)
             {
@@ -140,15 +147,14 @@ public class StarSystemDataProcessor : ContentProcessor<StarSystemImportData, St
         }
     }
     
-    private async Task<List<EdsmSystemJson>?> FetchFromApi(ContentProcessorContext context)
+    private async Task<List<EdsmSystemJson>?> FetchFromApiAsync(ContentProcessorContext context)
     {
         try
         {
-            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             var url = $"https://www.edsm.net/api-v1/sphere?systemName={Uri.EscapeDataString(ApiCenterSystem)}&radius={ApiRadius}&showCoordinates=1";
             
             context.Logger.LogMessage($"Fetching from: {url}");
-            var response = await client.GetStringAsync(url);
+            var response = await s_httpClient.GetStringAsync(url).ConfigureAwait(false);
             
             return JsonConvert.DeserializeObject<List<EdsmSystemJson>>(response);
         }

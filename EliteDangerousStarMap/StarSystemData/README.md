@@ -1,10 +1,18 @@
-# StarSystemData Content Pipeline Extension
+# StarSystemData Runtime Library
 
-A MonoGame content pipeline extension that fetches star system data from the EDSM API at build time and compiles it into an efficient binary format for runtime use.
+A MonoGame runtime library for querying star system data loaded from the content pipeline.
+
+## Projects Overview
+
+The star system data functionality is split across three .NET projects for MGCB compatibility:
+
+- **StarSystemData.Models** (.NET 8.0) - Core data models, consumed by MGCB and runtime
+- **StarSystemData.Pipeline** (.NET 8.0) - Content pipeline extension for build-time processing
+- **StarSystemData** (.NET 8.0) - Runtime components including ContentTypeReader and query providers
 
 ## Features
 
-- **Build-time Data Fetching**: Retrieves star system data during content build, not at runtime
+- **Build-time Data Processing**: Processes star system data during content build, not at runtime
 - **Fallback Support**: Uses local JSON file if API is unavailable
 - **Configurable Data Source**: Choose between API-first or Local-first modes
 - **Efficient Binary Format**: Optimized for fast loading at runtime
@@ -13,9 +21,17 @@ A MonoGame content pipeline extension that fetches star system data from the EDS
 
 ## Installation
 
-1. Add reference to StarSystemData project in your game project
-2. Add reference in Content.mgcb file
-3. Add your star system JSON file to content
+1. Add reference to `StarSystemData.Models` and `StarSystemData` projects in your game project
+2. Build `StarSystemData.Pipeline` to get the DLLs for MGCB
+3. Add references in Content.mgcb file:
+
+```
+/reference:../../StarSystemData.Pipeline/bin/Release/net8.0/StarSystemData.Pipeline.dll
+/reference:../../StarSystemData.Models/bin/Release/net8.0/StarSystemData.Models.dll
+/reference:../../StarSystemData.Pipeline/bin/Release/net8.0/Newtonsoft.Json.dll
+```
+
+4. Add your star system JSON file to content
 
 ## Configuration
 
@@ -37,7 +53,7 @@ In your Content.mgcb file:
 #begin StarSystems.json
 /importer:StarSystemDataImporter
 /processor:StarSystemDataProcessor
-/processorParam:DataSource=ApiFirst
+/processorParam:DataSource=LocalFirst
 /processorParam:LocalFilePath=StarSystems.json
 /processorParam:ApiCenterSystem=Sol
 /processorParam:ApiRadius=100
@@ -140,6 +156,7 @@ public class MyProcessor : StarSystemDataProcessor
 
 ## Dependencies
 
-- MonoGame.Framework.Content.Pipeline 3.8+
+- MonoGame.Framework.DesktopGL 3.8+
+- MonoGame.Framework.Content.Pipeline 3.8+ (for Pipeline project)
 - Newtonsoft.Json 13.0+
-- .NET 9.0+
+- .NET 8.0 (for MGCB compatibility)

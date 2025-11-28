@@ -12,7 +12,7 @@ EliteDangerousStarMap/
 ├── ARCHITECTURE.md                         # This document
 ├── README.md                               # User-facing documentation
 │
-├── CameraAnimation/                        # Reusable camera animation library
+├── CameraAnimation/                        # Reusable camera animation library (.NET 9.0)
 │   ├── CameraAnimation.csproj
 │   ├── README.md
 │   ├── Interfaces/
@@ -29,27 +29,30 @@ EliteDangerousStarMap/
 │       ├── ReturnToControlAnimation.cs    # Smooth transition to user control
 │       └── ShipFollowAnimation.cs         # Follows moving ship target
 │
-├── StarSystemData/                         # Content pipeline extension library
+├── StarSystemData.Models/                  # Core data models (.NET 8.0 - MGCB compatible)
+│   ├── StarSystemData.Models.csproj
+│   ├── DataSourceMode.cs                  # API-first vs Local-first enum
+│   ├── StarSystemRecord.cs                # Binary-serializable system data
+│   └── StarSystemDatabase.cs              # Collection with spatial indexing
+│
+├── StarSystemData.Pipeline/                # Content pipeline extension (.NET 8.0)
+│   ├── StarSystemData.Pipeline.csproj
+│   ├── StarSystemDataProcessor.cs         # MGCB content importer/processor
+│   └── StarSystemDataWriter.cs            # Binary content writer
+│
+├── StarSystemData/                         # Runtime library (.NET 8.0)
 │   ├── StarSystemData.csproj
 │   ├── README.md
-│   ├── Models/
-│   │   ├── StarSystemRecord.cs            # Binary-serializable system data
-│   │   └── StarSystemDatabase.cs          # Collection with spatial indexing
-│   ├── Pipeline/
-│   │   ├── StarSystemDataImporter.cs      # MGCB content importer
-│   │   ├── StarSystemDataProcessor.cs     # MGCB content processor
-│   │   └── StarSystemDataWriter.cs        # Binary content writer
-│   ├── Runtime/
-│   │   ├── StarSystemDataReader.cs        # ContentManager reader
-│   │   └── IStarSystemDataProvider.cs     # Query interface
-│   └── Fetcher/
-│       └── EdsmDataFetcher.cs             # API data retrieval for build time
+│   └── Runtime/
+│       ├── StarSystemDataReader.cs        # ContentManager reader
+│       ├── IStarSystemDataProvider.cs     # Query interface
+│       └── ContentStarSystemProvider.cs   # Query implementation
 │
-├── StarSystemData.Tests/                   # Unit tests for data provider
+├── StarSystemData.Tests/                   # Unit tests (.NET 8.0)
 │   ├── StarSystemData.Tests.csproj
-│   └── StarSystemQueryTests.cs
+│   └── StarSystemQueryTests.cs            # 40 unit tests
 │
-└── EliteDangerousStarMap.Game/            # Main game project
+└── EliteDangerousStarMap.Game/            # Main game project (.NET 9.0)
     ├── EliteDangerousStarMap.Game.csproj
     ├── Program.cs                          # Entry point
     ├── Game1.cs                            # MonoGame Game class
@@ -57,12 +60,11 @@ EliteDangerousStarMap/
     ├── Content/
     │   ├── Content.mgcb                    # MonoGame content builder file
     │   ├── DefaultFont.spritefont
-    │   └── StarSystems.json               # Local fallback data file (optional)
+    │   └── StarSystems.json               # Local star system data (50 systems)
     ├── Input/
     │   └── FpsCameraController.cs         # FPS camera with IAnimatedCamera
     ├── Models/
     │   ├── StarSystem.cs                  # Runtime star system model
-    │   ├── Coordinates.cs                 # 3D coordinate wrapper
     │   ├── PlayerShip.cs                  # Player state and position
     │   ├── ShipFlightController.cs        # Flight state machine
     │   └── FlightLog.cs                   # Flight event logging
@@ -71,10 +73,26 @@ EliteDangerousStarMap/
     │   ├── LineRenderer.cs                # Grid and route lines
     │   └── CubeRenderer.cs                # Ship cube primitive
     ├── Services/
-    │   ├── EdsmApiService.cs              # EDSM API client (legacy)
-    │   └── ContentStarSystemProvider.cs   # Content pipeline data provider
+    │   ├── EdsmApiService.cs              # EDSM API client (legacy fallback)
+    │   └── StarSystemDataService.cs       # Runtime data service
     └── UI/
         └── UiRenderer.cs                  # HUD, info cards, settings
+```
+
+## Project Dependencies
+
+The star system data is split across three .NET 8.0 projects for MGCB compatibility:
+
+```
+StarSystemData.Models (.NET 8.0)  <-- Pure data models, no MonoGame dependency
+         ^
+         |
+    +----+----+
+    |         |
+StarSystemData.Pipeline (.NET 8.0)    StarSystemData (.NET 8.0)
+    |                                       |
+    v                                       v
+MGCB (Build Time)              EliteDangerousStarMap.Game (.NET 9.0)
 ```
 
 ## Core Systems

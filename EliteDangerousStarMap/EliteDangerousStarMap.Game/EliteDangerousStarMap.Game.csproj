@@ -38,5 +38,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CameraAnimation\CameraAnimation.csproj" />
     <ProjectReference Include="..\StarSystemData\StarSystemData.csproj" />
+    <ProjectReference Include="..\StarSystemData.Models\StarSystemData.Models.csproj" />
   </ItemGroup>
 </Project>

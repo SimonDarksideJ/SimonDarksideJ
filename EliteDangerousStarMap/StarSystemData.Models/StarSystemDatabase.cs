@@ -1,9 +1,8 @@
-using Microsoft.Xna.Framework;
-
 namespace StarSystemData.Models;
 
 /// <summary>
-/// A database of star systems with efficient lookup capabilities
+/// A database of star systems with efficient lookup capabilities.
+/// Uses simple float arrays for coordinates to avoid MonoGame dependency.
 /// </summary>
 public class StarSystemDatabase
 {
@@ -89,15 +88,19 @@ public class StarSystemDatabase
     /// <summary>
     /// Gets all systems within a sphere around a center point
     /// </summary>
-    public IReadOnlyList<StarSystemRecord> GetSystemsInSphere(Vector3 center, float radius)
+    public IReadOnlyList<StarSystemRecord> GetSystemsInSphere(float centerX, float centerY, float centerZ, float radius)
     {
         var radiusSquared = radius * radius;
         var results = new List<StarSystemRecord>();
         
         foreach (var system in _systems)
         {
-            var pos = new Vector3(system.X, system.Y, system.Z);
-            if (Vector3.DistanceSquared(center, pos) <= radiusSquared)
+            var dx = system.X - centerX;
+            var dy = system.Y - centerY;
+            var dz = system.Z - centerZ;
+            var distanceSquared = dx * dx + dy * dy + dz * dz;
+            
+            if (distanceSquared <= radiusSquared)
             {
                 results.Add(system);
             }
@@ -114,16 +117,16 @@ public class StarSystemDatabase
         var center = GetByName(systemName);
         if (center == null) return Array.Empty<StarSystemRecord>();
         
-        return GetSystemsInSphere(new Vector3(center.X, center.Y, center.Z), radius);
+        return GetSystemsInSphere(center.X, center.Y, center.Z, radius);
     }
     
     /// <summary>
     /// Gets the nearest systems to a position
     /// </summary>
-    public IReadOnlyList<StarSystemRecord> GetNearestSystems(Vector3 position, int count)
+    public IReadOnlyList<StarSystemRecord> GetNearestSystems(float x, float y, float z, int count)
     {
         return _systems
-            .OrderBy(s => Vector3.DistanceSquared(position, new Vector3(s.X, s.Y, s.Z)))
+            .OrderBy(s => DistanceSquared(x, y, z, s.X, s.Y, s.Z))
             .Take(count)
             .ToList();
     }
@@ -139,5 +142,24 @@ public class StarSystemDatabase
             .Where(s => s.Name.Contains(partialName, StringComparison.OrdinalIgnoreCase))
             .Take(maxResults)
             .ToList();
+    }
+    
+    /// <summary>
+    /// Calculates distance between two systems
+    /// </summary>
+    public static float Distance(StarSystemRecord a, StarSystemRecord b)
+    {
+        var dx = a.X - b.X;
+        var dy = a.Y - b.Y;
+        var dz = a.Z - b.Z;
+        return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+    }
+    
+    private static float DistanceSquared(float x1, float y1, float z1, float x2, float y2, float z2)
+    {
+        var dx = x1 - x2;
+        var dy = y1 - y2;
+        var dz = z1 - z2;
+        return dx * dx + dy * dy + dz * dz;
     }
 }

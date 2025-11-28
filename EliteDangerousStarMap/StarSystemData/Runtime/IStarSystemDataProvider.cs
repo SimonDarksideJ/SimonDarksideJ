@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using StarSystemData.Models;
 
 namespace StarSystemData.Runtime;
 
@@ -77,6 +78,22 @@ public class StarSystemInfo
     public bool RequirePermit { get; init; }
     public string? PermitName { get; init; }
     public bool CoordsLocked { get; init; }
+    
+    /// <summary>
+    /// Creates StarSystemInfo from a StarSystemRecord
+    /// </summary>
+    public static StarSystemInfo FromRecord(StarSystemRecord record)
+    {
+        return new StarSystemInfo
+        {
+            Id = record.Id,
+            Name = record.Name,
+            Position = new Vector3(record.X, record.Y, record.Z),
+            RequirePermit = record.RequirePermit,
+            PermitName = record.PermitName,
+            CoordsLocked = record.CoordsLocked
+        };
+    }
     
     /// <summary>
     /// Calculates distance to another system

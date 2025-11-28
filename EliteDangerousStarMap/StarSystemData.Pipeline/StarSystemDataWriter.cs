@@ -44,6 +44,6 @@ public class StarSystemDataWriter : ContentTypeWriter<StarSystemDatabase>
     
     public override string GetRuntimeType(TargetPlatform targetPlatform)
     {
-        return "StarSystemData.Models.StarSystemDatabase, StarSystemData";
+        return "StarSystemData.Models.StarSystemDatabase, StarSystemData.Models";
     }
 }

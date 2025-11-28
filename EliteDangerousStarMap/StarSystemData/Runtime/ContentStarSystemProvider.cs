@@ -27,15 +27,7 @@ public class ContentStarSystemProvider : IStarSystemDataProvider
         
         foreach (var record in _database.Systems)
         {
-            var info = new StarSystemInfo
-            {
-                Id = record.Id,
-                Name = record.Name,
-                Position = new Vector3(record.X, record.Y, record.Z),
-                RequirePermit = record.RequirePermit,
-                PermitName = record.PermitName,
-                CoordsLocked = record.CoordsLocked
-            };
+            var info = StarSystemInfo.FromRecord(record);
             
             _cachedSystems.Add(info);
             
