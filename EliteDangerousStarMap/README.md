@@ -103,28 +103,57 @@ dotnet build
 dotnet run --project EliteDangerousStarMap.Game
 ```
 
-## API Data Source
+## Data Source
 
-This application uses the [Elite Dangerous Star Map (EDSM)](https://www.edsm.net/) API:
+### Content Pipeline (Preferred)
+
+Star system data is now compiled at build time using a custom content pipeline extension. This provides:
+
+- **Offline Support**: No internet connection required at runtime
+- **Faster Loading**: Pre-compiled binary format loads instantly
+- **Data Source Options**:
+  - `ApiFirst`: Fetch from EDSM API at build time, fallback to local JSON
+  - `LocalFirst`: Use local JSON file only (for offline builds)
+
+Configure in `Content/Content.mgcb`:
+```
+/processorParam:DataSource=ApiFirst
+/processorParam:LocalFilePath=StarSystems.json
+/processorParam:ApiCenterSystem=Sol
+/processorParam:ApiRadius=100
+```
+
+### Fallback to Runtime API
+
+If content pipeline data is not available, the game falls back to the [EDSM API](https://www.edsm.net/api-v1/):
 - `/api-v1/systems` - Get list of star systems
 - `/api-v1/system` - Get details about a specific system
-- `/api-v1/sphere` - Get systems within a radius of a reference system
+- `/api-v1/sphere` - Get systems within a radius
 
 ## Project Structure
 
 ```
 EliteDangerousStarMap/
+├── ARCHITECTURE.md               # Detailed design documentation
 ├── CameraAnimation/              # Reusable camera animation library
 │   ├── Interfaces/               # IAnimatedCamera, ICameraAnimation
 │   ├── Animations/               # Orbit, Flyby, Zoom, ShipFollow, ReturnToControl
 │   ├── Core/                     # AnimationController, AnimationSettings
 │   └── README.md                 # Library documentation
+├── StarSystemData/               # Content pipeline extension library
+│   ├── Models/                   # StarSystemRecord, StarSystemDatabase
+│   ├── Pipeline/                 # Importer, Processor, Writer
+│   ├── Runtime/                  # Reader, IStarSystemDataProvider
+│   └── README.md                 # Library documentation
+├── StarSystemData.Tests/         # Unit tests for data provider
 ├── EliteDangerousStarMap.Game/
-│   ├── Content/                  # Game content (fonts, etc.)
+│   ├── Content/                  # Game content (fonts, star systems data)
+│   │   ├── Content.mgcb          # Content builder configuration
+│   │   └── StarSystems.json      # Local fallback data
 │   ├── Input/                    # Input handling (camera controller)
-│   ├── Models/                   # Data models (StarSystem, PlayerShip, FlightLog, ShipFlightController)
+│   ├── Models/                   # Data models (StarSystem, PlayerShip, etc.)
 │   ├── Rendering/                # 3D rendering (spheres, lines, cubes)
-│   ├── Services/                 # API services (EDSM)
+│   ├── Services/                 # Data services (StarSystemDataService, EdsmApiService)
 │   ├── UI/                       # User interface rendering
 │   ├── Game1.cs                  # Main game class
 │   ├── StarMapManager.cs         # Star map orchestration
@@ -143,6 +172,23 @@ The `CameraAnimation` library is a reusable component that can be used in any Mo
 - **Ship Follow Mode** for tracking moving targets
 
 See [CameraAnimation/README.md](CameraAnimation/README.md) for detailed documentation and extension points.
+
+## Star System Data Library
+
+The `StarSystemData` library provides:
+
+- **Build-time Data Fetching**: Retrieves data from EDSM API during content build
+- **Efficient Binary Format**: Fast loading at runtime
+- **Spatial Queries**: Sphere searches, nearest neighbors
+- **Offline Operation**: No API calls needed at runtime
+
+See [StarSystemData/README.md](StarSystemData/README.md) for usage and extension points.
+
+## Running Tests
+
+```bash
+dotnet test StarSystemData.Tests
+```
 
 ## License
 

@@ -49,6 +49,7 @@ public class Game1 : Microsoft.Xna.Framework.Game
         _starMapManager.SetFont(_font);
 
         // Start loading star data asynchronously
+        // Prefers local file, falls back to API
         _ = LoadStarDataAsync();
     }
 

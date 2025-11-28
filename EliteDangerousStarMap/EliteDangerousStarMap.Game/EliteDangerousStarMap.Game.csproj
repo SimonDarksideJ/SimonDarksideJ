@@ -25,11 +25,18 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <!-- Copy StarSystems.json to output as content -->
+    <Content Include="Content\StarSystems.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CameraAnimation\CameraAnimation.csproj" />
+    <ProjectReference Include="..\StarSystemData\StarSystemData.csproj" />
   </ItemGroup>
 </Project>

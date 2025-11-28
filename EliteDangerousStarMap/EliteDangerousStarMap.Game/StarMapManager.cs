@@ -18,6 +18,7 @@ public class StarMapManager : IDisposable
 {
     private readonly GraphicsDevice _graphicsDevice;
     private readonly EdsmApiService _apiService;
+    private StarSystemDataService? _dataService;
     private readonly SphereRenderer _sphereRenderer;
     private readonly LineRenderer _lineRenderer;
     private readonly CubeRenderer _cubeRenderer;
@@ -133,13 +134,50 @@ public class StarMapManager : IDisposable
     }
 
     /// <summary>
-    /// Loads star system data from the EDSM API
+    /// Loads star system data from local file (preferred) or falls back to API
     /// </summary>
     public async Task LoadStarDataAsync()
     {
         _isLoading = true;
-        _loadingMessage = "Connecting to EDSM API...";
-
+        _loadingMessage = "Loading star systems...";
+        
+        // Use the data service which handles local file and API fallback
+        _dataService = new StarSystemDataService();
+        
+        try
+        {
+            // Try to load from local file first, fall back to API
+            await _dataService.LoadAsync(
+                dataSourceMode: StarSystemData.Models.DataSourceMode.LocalFirst,
+                localFilePath: "Content/StarSystems.json",
+                apiCenterSystem: "Sol",
+                apiRadius: 100);
+            
+            if (_dataService.IsLoaded && _dataService.SystemCount > 0)
+            {
+                _starSystems = _dataService.GetAllSystems();
+                _loadingMessage = $"Loaded {_starSystems.Count} star systems ({_dataService.DataSource})";
+                
+                InitializePlayerAndCamera();
+                _isLoading = false;
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Data service load failed: {ex.Message}");
+        }
+        
+        // Fall back to legacy API loading if data service failed
+        _loadingMessage = "Data service failed, trying direct API...";
+        await LoadFromApiAsync();
+    }
+    
+    /// <summary>
+    /// Loads star system data from EDSM API (fallback method)
+    /// </summary>
+    private async Task LoadFromApiAsync()
+    {
         try
         {
             // First, try to get systems around Sol (the center of the Elite universe)
@@ -161,21 +199,9 @@ public class StarMapManager : IDisposable
                 .Take(1000) // Limit for performance
                 .ToList();
 
-            _loadingMessage = $"Loaded {_starSystems.Count} star systems";
+            _loadingMessage = $"Loaded {_starSystems.Count} star systems from API";
 
-            // Set player to random starting system
-            _playerShip.SetRandomStartSystem(_starSystems, _random);
-
-            // Center camera on player's starting position
-            if (_playerShip.CurrentSystem != null)
-            {
-                var startPos = _playerShip.CurrentSystem.WorldPosition;
-                _camera.SetPosition(startPos - new Vector3(0, 0, 50)); // Offset so we can see the system
-                
-                // Set the animation focus point to player's system
-                _animationController.FocusPoint = startPos;
-            }
-
+            InitializePlayerAndCamera();
             _isLoading = false;
         }
         catch (Exception ex)
@@ -186,6 +212,25 @@ public class StarMapManager : IDisposable
             // Create some sample data for testing if API fails
             CreateSampleData();
             _isLoading = false;
+        }
+    }
+    
+    /// <summary>
+    /// Initializes player position and camera after loading star systems
+    /// </summary>
+    private void InitializePlayerAndCamera()
+    {
+        // Set player to random starting system
+        _playerShip.SetRandomStartSystem(_starSystems, _random);
+
+        // Center camera on player's starting position
+        if (_playerShip.CurrentSystem != null)
+        {
+            var startPos = _playerShip.CurrentSystem.WorldPosition;
+            _camera.SetPosition(startPos - new Vector3(0, 0, 50)); // Offset so we can see the system
+            
+            // Set the animation focus point to player's system
+            _animationController.FocusPoint = startPos;
         }
     }
 
@@ -578,6 +623,7 @@ public class StarMapManager : IDisposable
         if (!_disposed)
         {
             _apiService?.Dispose();
+            _dataService?.Dispose();
             _sphereRenderer?.Dispose();
             _lineRenderer?.Dispose();
             _cubeRenderer?.Dispose();

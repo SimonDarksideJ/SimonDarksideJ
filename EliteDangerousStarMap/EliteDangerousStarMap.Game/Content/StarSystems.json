@@ -1,0 +1,356 @@
+[
+    {
+        "name": "Sol",
+        "id": 27,
+        "coords": { "x": 0, "y": 0, "z": 0 },
+        "requirePermit": true,
+        "permitName": "Sol",
+        "coordsLocked": false
+    },
+    {
+        "name": "Alpha Centauri",
+        "id": 28,
+        "coords": { "x": 3.03, "y": -0.08, "z": 3.15 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Barnard's Star",
+        "id": 29,
+        "coords": { "x": -3.03, "y": 1.37, "z": 4.94 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Wolf 359",
+        "id": 30,
+        "coords": { "x": 3.86, "y": 6.47, "z": 1.93 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Lalande 21185",
+        "id": 31,
+        "coords": { "x": -6.54, "y": 1.65, "z": 4.93 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Sirius",
+        "id": 32,
+        "coords": { "x": 6.22, "y": -1.01, "z": -1.79 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Luyten 726-8",
+        "id": 33,
+        "coords": { "x": 5.82, "y": -3.00, "z": -0.67 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Ross 154",
+        "id": 34,
+        "coords": { "x": 1.93, "y": -0.94, "z": -9.46 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Ross 248",
+        "id": 35,
+        "coords": { "x": 7.45, "y": -2.42, "z": 7.19 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Epsilon Eridani",
+        "id": 36,
+        "coords": { "x": 1.93, "y": -7.76, "z": -6.92 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Lacaille 9352",
+        "id": 37,
+        "coords": { "x": 2.16, "y": -5.71, "z": -8.48 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "EZ Aquarii",
+        "id": 38,
+        "coords": { "x": -7.84, "y": -5.91, "z": 3.45 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Procyon",
+        "id": 39,
+        "coords": { "x": -9.43, "y": 3.35, "z": 3.72 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "61 Cygni",
+        "id": 40,
+        "coords": { "x": 6.28, "y": 5.41, "z": 7.66 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Struve 2398",
+        "id": 41,
+        "coords": { "x": 4.66, "y": 8.45, "z": 6.72 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Groombridge 34",
+        "id": 42,
+        "coords": { "x": 0.84, "y": 5.17, "z": 10.05 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "DX Cancri",
+        "id": 43,
+        "coords": { "x": -7.28, "y": 5.65, "z": -7.38 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Tau Ceti",
+        "id": 44,
+        "coords": { "x": -3.16, "y": -8.88, "z": -3.89 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Epsilon Indi",
+        "id": 45,
+        "coords": { "x": 2.72, "y": -6.78, "z": -9.31 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "YZ Ceti",
+        "id": 46,
+        "coords": { "x": -4.69, "y": -9.05, "z": -2.19 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Luyten's Star",
+        "id": 47,
+        "coords": { "x": -8.38, "y": 3.14, "z": -9.88 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Teegarden's Star",
+        "id": 48,
+        "coords": { "x": 7.47, "y": 2.23, "z": -9.38 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Kapteyn's Star",
+        "id": 49,
+        "coords": { "x": 0.81, "y": -10.08, "z": -7.09 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Altair",
+        "id": 50,
+        "coords": { "x": 12.33, "y": -1.31, "z": 9.52 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Vega",
+        "id": 51,
+        "coords": { "x": 0.66, "y": 24.31, "z": 8.05 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Fomalhaut",
+        "id": 52,
+        "coords": { "x": 17.56, "y": -20.61, "z": -6.71 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Deneb",
+        "id": 53,
+        "coords": { "x": -478.69, "y": 1615.77, "z": 1152.64 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Polaris",
+        "id": 54,
+        "coords": { "x": -51.97, "y": 399.35, "z": -141.99 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Arcturus",
+        "id": 55,
+        "coords": { "x": -27.17, "y": 36.59, "z": 2.56 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Rigel",
+        "id": 56,
+        "coords": { "x": -276.41, "y": -712.48, "z": 215.51 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Betelgeuse",
+        "id": 57,
+        "coords": { "x": 193.5, "y": -271.72, "z": 462.56 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Canopus",
+        "id": 58,
+        "coords": { "x": -116.95, "y": -229.5, "z": -206.92 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Achernar",
+        "id": 59,
+        "coords": { "x": 57.45, "y": -80.75, "z": -79.21 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Hadar",
+        "id": 60,
+        "coords": { "x": -122.55, "y": -49.58, "z": -331.25 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Acrux",
+        "id": 61,
+        "coords": { "x": -66.15, "y": -30.47, "z": -304.89 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Spica",
+        "id": 62,
+        "coords": { "x": 79.53, "y": 80.89, "z": -215.11 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Antares",
+        "id": 63,
+        "coords": { "x": 301.29, "y": 62.66, "z": -430.75 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Regulus",
+        "id": 64,
+        "coords": { "x": -68.28, "y": 24.08, "z": -32.1 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Pollux",
+        "id": 65,
+        "coords": { "x": -27.42, "y": 19.08, "z": 16.62 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Castor",
+        "id": 66,
+        "coords": { "x": -31.84, "y": 26.92, "z": 29.56 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Aldebaran",
+        "id": 67,
+        "coords": { "x": 31.67, "y": -30.72, "z": 46.41 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Achenar",
+        "id": 68,
+        "coords": { "x": -38.54, "y": -148.6, "z": -11.54 },
+        "requirePermit": true,
+        "permitName": "Empire",
+        "coordsLocked": false
+    },
+    {
+        "name": "Alioth",
+        "id": 69,
+        "coords": { "x": -33.66, "y": 72.86, "z": -20.67 },
+        "requirePermit": true,
+        "permitName": "Alliance",
+        "coordsLocked": false
+    },
+    {
+        "name": "Gateway",
+        "id": 70,
+        "coords": { "x": -18.08, "y": -68.63, "z": 46.63 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Shinrarta Dezhra",
+        "id": 71,
+        "coords": { "x": 55.72, "y": 17.59, "z": 27.16 },
+        "requirePermit": true,
+        "permitName": "Founders World",
+        "coordsLocked": false
+    },
+    {
+        "name": "Colonia",
+        "id": 72,
+        "coords": { "x": -9530.5, "y": -910.28, "z": 19808.12 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Sagittarius A*",
+        "id": 73,
+        "coords": { "x": 25.22, "y": -20.91, "z": 25899.97 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Hutton Orbital",
+        "id": 74,
+        "coords": { "x": 3.03, "y": -0.08, "z": 3.15 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Maia",
+        "id": 75,
+        "coords": { "x": -81.78, "y": -149.44, "z": -343.37 },
+        "requirePermit": false,
+        "coordsLocked": false
+    },
+    {
+        "name": "Merope",
+        "id": 76,
+        "coords": { "x": -78.59, "y": -149.63, "z": -340.53 },
+        "requirePermit": false,
+        "coordsLocked": false
+    }
+]
