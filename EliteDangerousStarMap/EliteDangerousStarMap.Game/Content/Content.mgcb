@@ -1,0 +1,33 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+/reference:../../StarSystemData.Pipeline/bin/Release/net8.0/StarSystemData.Pipeline.dll
+/reference:../../StarSystemData.Models/bin/Release/net8.0/StarSystemData.Models.dll
+/reference:../../StarSystemData.Pipeline/bin/Release/net8.0/Newtonsoft.Json.dll
+
+#---------------------------------- Content ---------------------------------#
+
+#begin DefaultFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:DefaultFont.spritefont
+
+#begin StarSystems.json
+/importer:StarSystemDataImporter
+/processor:StarSystemDataProcessor
+/processorParam:DataSource=LocalFirst
+/processorParam:LocalFilePath=StarSystems.json
+/processorParam:ApiCenterSystem=Sol
+/processorParam:ApiRadius=100
+/build:StarSystems.json
