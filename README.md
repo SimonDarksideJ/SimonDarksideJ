@@ -1,5 +1,9 @@
 <a rel="me" href="https://mastodon.social/@SimonDarksideJ"/>
 <div align=center>
+<a href="https://zenithmoon.com/simon-jackson"><img src="./images/simon-jackson-banner.png" alt="Simon Jackson, solutions and enterprise architect. Open to permanent or contract roles. Read more at zenithmoon.com/simon-jackson" width="100%"/></a>
+</div>
+
+<div align=center>
 <a href="https://twitter.com/SimonDarksideJ"><img src="https://cdn.worldvectorlogo.com/logos/twitter-6.svg" title="Twitter" alt="Twitter Account" width="40"/></a> 
 &ensp;<a href="https://www.twitch.tv/simondarksidej"><img src="https://cdn.worldvectorlogo.com/logos/twitch-logo-2019.svg" title="Twitch" alt="Twitch Account" width="60"/></a> 
 &ensp;<a href="https://www.youtube.com/@SimonDarksideJ"><img src="https://cdn.worldvectorlogo.com/logos/youtube-icon-5.svg" title="YouTube" alt="YouTube Account" width="40"/></a>
